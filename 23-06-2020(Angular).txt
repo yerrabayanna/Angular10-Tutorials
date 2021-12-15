@@ -1,0 +1,78 @@
+		  Angular
+What is Angular ?
+- Angular is an Open Source and Cross platform developers platform maintained by Google and a large communinty of organizations and individuals.
+
+- A developers platform provides end-to-end tools to build an application i.e  from Development to Production.
+
+- It is designed to build complex SPA and Progressive Web Apps. [App like experience in Browser].
+
+Features of Angular:
+1. Cross Platform
+	Cordova, NativeScript, Ionic
+2. Open Source
+3. Speed and Performance
+    - Modular
+    - Differential Loading
+    - Dynamic Loading  [modify - refresh]
+4. Supports frameworks like
+      MVC, MVP, MVVM
+	
+		Angular 9
+
+Setup Environment for Angular
+----------------------------------------------
+1. Install Node JS
+2. Install TypeScript
+3. Install Angular CLI  
+     [Tool used to create, configure and manage your angular app]
+
+     - Open Command Prompt
+     - Install with NPM
+	>npm  install -g  @angular/cli
+
+      - Update to New Version
+	>ng update @angular/cli  @angular/core
+
+Creating a new Angular App:
+-----------------------------------------
+1. Create a new Folder in your PC
+	"Angular_Online_Projects"
+
+2. Open folder location in command prompt
+
+	>ng new appName
+	>ng new Amazon
+
+3. It will ask for
+    ? Would you like to add Angular routing? (y/N) N
+    ? Which stylesheet format would you like to use? CSS
+
+4. It creates a new Application 
+
+
+Angular is all about:
+1. Components
+2. Pipes
+3. Services
+4. Directives
+5. Routing
+6. Forms
+7. Animations
+8. Materials
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

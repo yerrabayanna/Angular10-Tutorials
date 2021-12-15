@@ -1,0 +1,119 @@
+ngIf
+ *ngIf	→ for HTML elements
+ [ngIf]	→ Angular containers
+
+Syntax:
+ <ng-template [ngIf]="showImage">
+            <img [src]="product.Photo" width="200" height="200" class="img-thumbnail">
+ </ng-template>
+
+		"ngSwitch Directive"
+- Switch is selector.
+- A switch selector can execute only the block that matches the specified condition.
+- Only the block or container that matches with condition will be added to DOM others are removed from DOM.
+- Switch Block is defined by using "ngSwitch"
+- Case Block is defined by using "ngSwitchCase"
+- Default Block is defined by using "ngSwitchDefault"
+
+Syntax:
+<main-container [ngSwitch]="Expression">
+     <child-container *ngSwitchCase="">
+     </child-container>
+
+     <child-container *ngSwitchDefault>
+     </child-container>
+</main-container>
+
+Ex:
+ <div [ngSwitch]="3">
+        <div *ngSwitchCase="1">
+            One
+        </div>
+        <div *ngSwitchCase="2">
+            Two
+        </div>
+        <div *ngSwitchDefault>
+            Please Enter only 1 or 2
+        </div>
+    </div>
+
+		
+Ex:
+1. Add a new component
+	>ng g c  switchdemo 
+
+2. switchdemo.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-switchdemo',
+  templateUrl: './switchdemo.component.html',
+  styleUrls: ['./switchdemo.component.css']
+})
+export class SwitchdemoComponent {
+  public product = {
+    Name: 'Nike Casuals',
+    Price: 5600.55,
+    Description: 'something more about this product..',
+    Mfd: new Date('2020/02/17'),
+    Photo: 'assets/nike.jpg'
+  };
+  public selectedView = 'info';
+  public ViewSelected(eventObj){
+     this.selectedView = eventObj.target.name;
+  }
+}
+
+
+3. switchdemo.component.html
+
+<div class="container-fluid">
+  <h2>Product Details</h2>
+  <div class="btn-toolbar bg-danger">
+    <div class="btn-group">
+        <button (click)="ViewSelected($event)" name="info" class="btn btn-danger">Product Info</button>
+        <button (click)="ViewSelected($event)" name="preview" class="btn btn-danger">Product Preview</button>
+        <button (click)="ViewSelected($event)" name="details" class="btn btn-danger">More Details</button>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 50px; margin-left: 50px;">
+    <div [ngSwitch]="selectedView">
+        <!--Info Card-->
+        <div class="card" *ngSwitchCase="'info'" >
+            <div class="card-header">
+                <h3 class="card-title">{{product.Name}}</h3>
+            </div>
+            <div class="card-body">
+                <dl>
+                    <dt>Price</dt>
+                    <dd>{{product.Price}}</dd>
+                    <dt>Manufactured</dt>
+                    <dd>{{product.Mfd.toDateString()}}</dd>
+                </dl>
+            </div>
+        </div>
+        <!--Preview Card-->
+        <div class="card" *ngSwitchCase="'preview'">
+            <div class="card-body">
+                <img [src]="product.Photo" width="200" height="200">
+            </div>
+        </div>
+        <!--Summary Card-->
+        <div class="card" *ngSwitchCase="'details'">
+            <div class="card-body">
+                <p>{{product.Description}}</p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

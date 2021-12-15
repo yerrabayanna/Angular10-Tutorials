@@ -1,0 +1,157 @@
+			    Validation in Template Driven Forms
+			    ===================================
+- Validation is the process of verifying user input. 
+- Validation is required to ensure that contractionary and un-authorized data is not stored
+  into the data source. 
+- Angular handle validations client side by using a set of validation services, which are
+  categorized into 2 groups
+
+	o Form State Validation Services
+	o Input State Validation Services
+
+Form State Validation:
+=====================
+- Form State Validation verifies all fields in a form simultaneously at the same time. 
+- The angular services for Form state validation are:
+
+Service Name 	Property 	Description
+============	========	===========
+NgPristine 	pristine 	It returns Boolean true when form is untouched.
+				No modification happened in the form.
+
+NgDirty		dirty 		It returns Boolean true when form modified.
+				At least one field value changed in form then it
+				returns dirty as true.
+
+NgValid 	valid 		It states that all fields in the form have valid data.
+				It returns true when all are valid.
+
+NgInvalid 	invalid 	It returns true when least one field in the form
+				doesn’t contain valid data.
+
+NgSubmitted 	submitted 	It returns true on form submit event occurred.
+
+Syntax:
+=======
+<form #frmRegister=”ngForm”>
+</form>
+frmRegister.pristine
+frmRegister.dirty
+frmRegister.invalid
+Ex:
+1. Formvalidation.component.ts
+--- no change –
+2. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text"
+name="txtName" minlength="4" required>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ </dd>
+ </dl>
+ <button [disabled]="frmRegister.invalid" class="btn btn-primary btn-block">Register</button>
+ <button *ngIf="frmRegister.dirty" class="btn btn-success btn-block">Save</button>
+ </form>
+ </div>
+ <div class="col-9">
+ <h2>Form Validation Services</h2>
+ <table class="table table-hover">
+ <tr>
+ <td>Pristine [No changes occured]</td>
+ <td>{{frmRegister.pristine}}</td>
+ </tr>
+ <tr>
+ <td>Dirty [Modified - Changes Occured]</td>
+ <td>{{frmRegister.dirty}}</td>
+ </tr>
+ <tr>
+ <td>Valid [Form Valid]</td>
+ <td>{{frmRegister.valid}}</td>
+ </tr>
+ <tr>
+ <td>Invalid [Form Invalid]</td>
+ <td>{{frmRegister.invalid}}</td>
+ </tr>
+ <tr>
+ <td>Submitted</td>
+ <td>{{frmRegister.submitted}}</td>
+ </tr>
+ </table>
+ </div>
+ </div>
+</div>
+3. Formvalidation.component.css
+button:disabled {
+ cursor: not-allowed;
+}
+
+Input State Validation:
+======================
+				   
+- It is the process of verifying every form element individually. 
+- Angular provides a set of validation services for input state.
+
+ Service 	Property 	Description
+==========	=========	===========
+ NgPristine 	pristine 	It returns true when any specific element is not yet
+				modified.
+
+ NgDirty 	dirty 		It returns true when any specific element value is
+				modified.
+
+ NgTouched 	touched 	It returns true when element got focus and blurred.
+ NgUntouched 	Untouched 	It returns true when element never touched.
+ NgValid 	valid 		It returns true when form element is having valid data.
+ NgInvalid 	invalid 	It returns true when form element is having invalid data.
+ NgErrors 	errors 		It is a object that collects all errors of input field.
+					- Required
+					- Minlength
+					- Maxlength
+					- Pattern
+					- Email etc..
+Syntax:
+ txtName.pristine
+ txtName.dirty
+ txtName.errors.required
+
+Ex: formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text" name="txtName"
+ minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>

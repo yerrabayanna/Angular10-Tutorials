@@ -1,0 +1,316 @@
+			    Create and Configure Form and Nested Forms
+			    ==========================================
+
+- You can dynamically create and configure forms. 
+- It allows to extend the form and make it more asynchronous. 
+- You can create a form by using “FormGroup” base. 
+- FormGroup is a collection of FormControls.
+
+Syntax:
+Public parentForm = new FormGroup({
+ controlName: new FormControl(‘ ‘),
+ childForm: new FormGroup({
+controlName: new FormControl(‘ ‘)
+ })
+}) 
+- To bind a form and nested form you have to use the properties
+
+	o formGroup – Parent Form
+	o formGroupName – Child Form
+
+ <form [formGroup]=”parentForm”>
+ <div [formGroupName]=”childForm”>
+ </div>
+</form>
+- Form control is defined by using “formControlName”
+ <input type=”text” formControlName=”controlName”>
+
+- setValue() is used to set value into any element. 
+- patchValue() it configures asynchronous binding.
+
+Ex:
+1. reactivedemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+@Component({
+ selector: 'app-reactivedemo',
+ templateUrl: './reactivedemo.component.html',
+ styleUrls: ['./reactivedemo.component.css']
+})
+export class ReactivedemoComponent {
+ public frmRegister = new FormGroup({
+ Name: new FormControl(''),
+ Price: new FormControl(''),
+ frmDetails: new FormGroup({
+ City: new FormControl(''),
+ InStock: new FormControl('')
+ })
+ });
+ public UpdateParital() {
+ this.frmRegister.patchValue({
+ Name: 'Samsung TV',
+ frmDetails: {
+ City: 'Delhi',
+ InStock: true
+ }
+ })
+ }
+}
+2. reactivedemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ </fieldset>
+ <button (click)="UpdateParital()" class="btn btn-primary btnblock">Update</button>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of
+ Stock"}}</dd>
+ </dl>
+ </div>
+</div>
+
+				   FormBuilder in Reactive Form
+				   ============================
+
+- FormBuilder is a service provided by Angular to configure forms and its elements
+ dynamically. 
+- FormBuilder uses singleton pattern. - FormBuilder provides methods
+	o group()
+	o control()
+	o array() 
+- Group() configures a form group. 
+- Control() configures form control. 
+- Array() configure a collection of form controls. You can add or remove controls
+ dynamically. 
+- The properties used for element in FormBuilder to bind with UI.
+	o formGroup : Parent Form
+	o formGroupName : Child Form
+	o formControlName : Form Elements
+EX:
+1. formbuilderdemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+@Component({
+ selector: 'app-formbuilderdemo',
+ templateUrl: './formbuilderdemo.component.html',
+ styleUrls: ['./formbuilderdemo.component.css']
+})
+export class FormbuilderdemoComponent implements OnInit {
+ constructor(private fb: FormBuilder) { }
+ public frmRegister = this.fb.group({
+ Name: [''],
+ Price: [''],
+ frmDetails: this.fb.group({
+ City: [''],
+ InStock: ['']
+ })
+ });
+ ngOnInit(): void {
+ }
+}
+2. formbuilderdemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ </fieldset>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of Stock"}}</dd>
+ </dl>
+ </div>
+ </div>
+
+FormArray & FormControl:
+=======================
+
+- FormArray allows to add or remove any form element dynamically. 
+- It uses FormBuilder “array()” method. 
+- It is implementing TypeScript array, which can use all array functions like push(), shift(),
+  pop(), removeAt() etc.
+Ex:
+1. Formbuilderdemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormArray } from '@angular/forms';
+@Component({
+ selector: 'app-formbuilderdemo',
+ templateUrl: './formbuilderdemo.component.html',
+ styleUrls: ['./formbuilderdemo.component.css']
+})
+export class FormbuilderdemoComponent implements OnInit {
+ constructor(private fb: FormBuilder) { }
+ public frmRegister = this.fb.group({
+ Name: [''],
+ Price: [''],
+ frmDetails: this.fb.group({
+ City: [''],
+ InStock: ['']
+ }),
+ newControls: this.fb.array([
+ this.fb.control('')
+ ])
+ });
+ get newControls(){
+ return this.frmRegister.get('newControls') as FormArray;
+ }
+ public AddPhoto(){
+ this.newControls.push(this.fb.control(''));
+ }
+ public RemovePhoto(i) {
+ this.newControls.removeAt(i);
+ }
+ ngOnInit(): void {
+ }
+}
+2. Formbuilderdemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ <div>
+ <h2>
+ Upload Photo
+ <button (click)="AddPhoto()" class="btn btn-link">Add More</button>
+ </h2>
+ <div style="margin-top: 20px;" *ngFor="let control of newControls.controls; let
+ i=index">
+ <input type="file" formControlName="i">
+ <button (click)="RemovePhoto(i)" class="btn btn-link">Remove</button>
+ </div>
+ </div>
+ </fieldset>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of Stock"}}</dd>
+ </dl>
+ </div>
+ </div>
+ 

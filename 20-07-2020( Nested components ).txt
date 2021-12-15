@@ -1,0 +1,96 @@
+Add following components
+> ng g component productsfilter --skipTests=true
+> ng g component productsList --skipTests=true
+
+Productsfilter.component.ts
+
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-productsfilter',
+  templateUrl: './productsfilter.component.html',
+  styleUrls: ['./productsfilter.component.css']
+})
+export class ProductsfilterComponent {
+  public selectedCategoryName = 'All';
+
+  @Input() public AllCount = 0;
+  @Input() public ElectronicsCount = 0;
+  @Input() public FootwearCount = 0;
+  @Input() public FashionCount = 0;
+  @Output() public EmitCategoryName: EventEmitter<string> = new EventEmitter<string>();
+  public OnCategoryChanged() {
+    this.EmitCategoryName.emit(this.selectedCategoryName);
+  }
+}
+
+ProductsFilter.component.html
+
+<div style="margin-top: 50px;">
+ <h2>Filter Products</h2>
+ <div>
+     <label>Choose Category</label>
+     <div>
+         <select (change)="OnCategoryChanged()" [(ngModel)]="selectedCategoryName" class="form-control">
+            <option value="All">All [{{AllCount}}]</option>
+            <option value="Electronics">Electronics [{{ElectronicsCount}}] </option>
+            <option value="Footwear">Footwear [{{FootwearCount}}]</option>
+            <option value="Fashion">Fashion [{{FashionCount}}]</option>
+         </select>
+     </div>
+ </div>
+</div>
+
+ProductsList.component.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-productslist',
+  templateUrl: './productslist.component.html',
+  styleUrls: ['./productslist.component.css']
+})
+export class ProductslistComponent {
+ public products = [
+   {Name: 'JBL Speaker', Price: 45000.55, Photo: 'assets/jblspeaker.jpg', Category: 'Electronics'},
+   {Name: 'Earpods', Price: 4000.55, Photo: 'assets/earpods.jpg', Category: 'Electronics'},
+   {Name: 'Nike Casuals', Price: 9000.55, Photo: 'assets/shoe.jpg', Category: 'Footwear'},
+   {Name: 'Lee Cooper Boot', Price: 3000.55, Photo: 'assets/shoe1.jpg', Category: 'Footwear'},
+   {Name: 'Shirt', Price: 2600.55, Photo: 'assets/shirt.jpg', Category: 'Fashion'},
+   {Name: 'Jeans', Price: 2000.55, Photo: 'assets/jeans.jpg', Category: 'Fashion'}
+ ];
+ public ElectronicCount = this.products.filter(x=>x.Category=='Electronics').length;
+ public FootwearCount = this.products.filter(x=>x.Category=='Footwear').length;
+ public FashionCount = this.products.filter(x=>x.Category=='Fashion').length;
+ public selectedCategoryValue = 'All';
+ public onFilterCategoryChanged(selectedCategoryName) {
+    this.selectedCategoryValue = selectedCategoryName;
+ }
+}
+
+ProductsList.component.html
+
+<div class="container-fluid">
+  <h2 class="text-center text-primary">Amazon Shopping</h2>
+  <div class="row" style="margin-top: 50px;">
+    <div class="col-2">
+        <app-productsfilter [AllCount]="products.length" [ElectronicsCount]="ElectronicCount" [FootwearCount]="FootwearCount" [FashionCount]="FashionCount" (EmitCategoryName)="onFilterCategoryChanged($event)"></app-productsfilter>
+    </div>
+    <div class="col-10">
+        <div class="card-deck">
+            <ng-container *ngFor="let item of products">
+                <div class="card" *ngIf="selectedCategoryValue=='All' || selectedCategoryValue == item.Category" >
+                    <div class="card-header">
+                     <h3 class="card-title">{{item.Name}}</h3>
+                    </div>
+                    <div class="card-body text-center">
+                     <img [src]="item.Photo" width="100" height="100">
+                    </div>
+                    <div class="card-footer">
+                     <h3 class="card-subtitle">{{item.Price}}</h3>
+                    </div>
+                   </div>
+            </ng-container>
+        </div>            
+    </div>
+  </div>
+</div>

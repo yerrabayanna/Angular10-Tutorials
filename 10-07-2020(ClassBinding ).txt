@@ -1,0 +1,130 @@
+		Class Binding
+- ngClass is an attribute directive used to bind css classes dynamically.
+- The effects for HTML element can change dynamically.
+- Class can be defined dynamically by using following references
+	
+1. String Reference: It is used to bind any specific css class.
+
+     <div  [ngClass]=" 'className' "> </div>
+
+Ex:
+		.css file
+.effects {
+    background-color: darkcyan;
+    color: white;
+    text-align: center;
+}
+		.html file
+<div class="container-fluid">
+  <h2 [ngClass]="'effects'">Angular Class Binding</h2>
+</div>
+
+2. Array Reference : It is used to define multiple classes dynamically to any element.
+
+Syntax:
+        <div  [ngClass]="['class1', 'class2']"> </div>
+
+
+Ex:
+		.css file
+
+.bgEffects {
+    background-color: darkcyan;
+}
+.txtEffects {
+    color:white;
+    text-align: center;
+}
+.borderEffects {
+    border:2px solid darkcyan;
+    box-shadow: 2px 2px 3px darkcyan;
+}
+
+		.ts file
+export class ClassbindingComponent {
+   public effects = [];
+}
+
+		.html file
+<div class="container-fluid">
+  <h2>Class Binding</h2>
+  <div class="form-group">
+    <input [(ngModel)]="effects" type="text" placeholder="eg: bgEffects, txtEffects, borderEffects" class="form-control">
+  </div>
+  <h2 [ngClass]="effects">Angular Class Binding</h2>
+</div>
+
+3. Object Reference:  It allows to configure multiple classes and switch between the classes dynamically by turning ON or OFF with a boolean value.
+
+Syntax:
+           <div  [ngClass]="{ClassName:booleanValue, className:booleanExpression}"> </div>
+
+Note:  Object Reference uses class name in a string format if it is defined with special chars.
+
+            <div [ngClass="{'class-name':booleanValue}">
+            </div>
+
+Ex:
+		.css file
+.bgEffects {
+    background-color: darkcyan;
+}
+.txtEffects {
+    color:white;
+    text-align: center;
+}
+.border-Effects {
+    border:2px solid darkcyan;
+    box-shadow: 2px 2px 3px darkcyan;
+}
+
+		.ts file
+export class ClassbindingComponent {
+    public flagBackground = false;
+    public flagText = false;
+    public flagBorder = false;
+}
+		.html file
+
+<div class="container-fluid">
+  <h2>Class Binding</h2>
+  <ul class="list-unstyled">
+    <li><input [(ngModel)]="flagBackground" type="checkbox">Background Effects</li>
+    <li><input [(ngModel)]="flagText" type="checkbox">Text Effects</li>
+    <li><input [(ngModel)]="flagBorder" type="checkbox">Border Effects</li>
+  </ul>
+  <h2 [ngClass]="{bgEffects:flagBackground, txtEffects:flagText, 'border-Effects':flagBorder}">Angular Class Binding</h2>
+</div>
+
+		Binding Inline Styles
+		=================
+- Inline styles are defined by using "ngStyle"
+- It can defined effects to your element without an external css file.
+- If you are using external css file, it will increase the number of requests for page and also page load time.
+- ngStyle is an attribute directive that uses a style object with a set of  style attributes and value.
+
+        <div [ngStyle]="{property:value, property:value}">
+        </div>
+
+Ex:
+		".ts" file
+export class ClassbindingComponent {
+    public styleObj = {};
+    public onMouseMove(e){
+        this.styleObj = {
+          'position': 'fixed',
+          'left': e.clientX + 'px',
+          'top': e.clientY + 'px'
+        };        
+    }
+}
+		".html" file
+<div (mousemove)="onMouseMove($event)" class="container-fluid">
+<div style="height: 1000px;">
+</div>
+<img [ngStyle]="styleObj" src="assets/flag.gif" width="50" height="50">
+</div>
+
+		Angular Event Binding
+
+

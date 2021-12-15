@@ -1,0 +1,60 @@
+					    Angular Security
+					    =================
+- Reporting vulnerabilities
+- Preventing XSS [Cross-Site-Scripting] Attacks
+- Preventing Request Forgery
+- Angular provides built-in protections against common web application
+  vulnerabilities and attacks. 
+- It is not dealing with application authentication (who is the user?) and
+authorization (what can this user do?).
+Preventing Cross-Scripting Attacks (XSS)
+- Enables the attackers to inject malicious code into web pages. 
+- They can write queries and submit into your application directly from apage. 
+- Angular uses “Sanitization and Security Contexts” to handle XSS.
+
+Angular Defines Following Security Contexts: 
+============================================
+- HTML is used when interpreting a value as HTML
+  innerHTML = “<b>Hello !</b>”
+- Styles is used when binding to CSS into style property. 
+- URL is used for url properties such as <a href=””>
+- Resources URL as URL that will be loaded when code is executed.
+<script src=””>
+- Angular uses “DomSanitizer.Sanitize” method for handling XSS. 
+- Angular also provides method to by-pass the security XSS
+	o bypassSecurityTrustHTML
+	o bypassSecurityTrustScript
+	o bypassSecurityTrustUrl
+	o bypassSecurityTrustResourceUrl
+	o bypassSecurityTrustStyleUrl
+Ex:
+1. securitydemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+@Component({
+ selector: 'app-securitydemo',
+ templateUrl: './securitydemo.component.html',
+ styleUrls: ['./securitydemo.component.css']
+})
+export class SecuritydemoComponent implements OnInit {
+ public xssUrl = 'javascript:alert("Hello !")';
+ public trustedUrl;
+ public xssVideoUrl = 'https://www.youtube.com/embed/44CSkhVzxTs';
+ public trustedVideoUrl;
+ constructor(private sanitizer: DomSanitizer) {
+ this.trustedUrl = this.sanitizer.bypassSecurityTrustUrl(this.xssUrl);
+ this.trustedVideoUrl =
+this.sanitizer.bypassSecurityTrustResourceUrl(this.xssVideoUrl);
+ }
+ ngOnInit(): void {
+ }
+}
+2. securitydemo.component.html
+<div class="container-fluid">
+ <h2>XSS URL - Don't Trust</h2>
+ <a [href]="xssUrl">Click Here - Don't Trust</a>
+ <h2>Trusted URL</h2>
+ <a [href]="trustedUrl">Click Here - Trust Me</a>
+ <h2>Video</h2>
+ <iframe [src]="trustedVideoUrl" width="400" height="300"></iframe>
+</div>

@@ -1,0 +1,435 @@
+Routing in Angular:
+==================
+- Routing is a technique to configure SEO and User-Friendly URL’s
+- Routing is uses in all web technologies. 
+- Angular implements routing client side. 
+- Routing enables asynchronous calls to components so that they can load without reloading
+  complete page. 
+- SPA new details a loaded into page without reloading the complete page. Routing
+  implements this for SPA.
+[It uses AJAX]
+- User can stay on one page and get access to all content from the page.
+
+  Angular Routing Library
+- @angular/router is a package that provides following modules for configuring routes
+	o RouterModule
+	o Routes
+- Routes is a collection of routes for your application. 
+- RouterModule is used to load the routes into RouteTable. 
+- Routing for Angular application is defined in “app-routing.module.ts”
+
+Syntax: app-routing.module.ts
+
+Import { NgModule } from ‘@angular/core’;
+Import { Routes, RouterModule } from ‘@angular/router’;
+const routes: Routes = [{ }, { }] ;
+@NgModule({
+Imports: [RouterModule.forRoot(routes)],
+Exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+- Routes is a collection of routes for your application. 
+- Every route is an object that comprises of following properties
+
+ 	Property 		Description
+===========================================================================================================
+	path 			It is the request path used to access any resource in application.
+				It specifies the request name and its components.
+
+	component 		It refers the component to be rendered when any specific path
+				is requested by client.
+
+	redirectTo 		It specifies the path for redirection. It can use an existing path
+				for navigation.
+	pathMatch 		It specifies the URL to access when requested path is similar to 
+				existing path.
+
+	children[] 		It is a collection of child routes. 
+
+- The links for route navigation are defined by using “routerLink” property
+
+Syntax:
+======
+<a routerLink=”pathname”> Text </a>
+- The target location where you want to render the component is defined by using “<routeroutlet>”
+- Every page can use only one <router-outlet>
+- Path property is configured with wild card routes.
+{ path: ‘ ‘ } If no component is requested then implicitly which component should
+render.
+{ path: ‘**’ } If there is no component path by requested name then which component
+should render.
+Ex:
+1. Create a new Application
+ ng g application Flipkart
+? Would you like to add Angular routing? (y/N) Y
+? Which CSS you want? CSS
+2. Go to “Styles.css”
+@import '../../../node_modules/bootstrap/dist/css/bootstrap.css';
+@import '../../../node_modules/fonts/css/all.css';
+3. Add new components into project
+ ng g c home –-skipTests
+ ng g c electronics
+ ng g c footwear
+ ng g c pagenotfound
+4. Design components
+Home.component.html
+<h2>Flipkart - Home </h2>
+<p>something about flipkart...</p>
+Electronics.component.html
+<div>
+ <h2>Electronics Home</h2>
+ <img src="assets/tv.jpg" width="100" height="100">
+ <img src="assets/speaker.jpg" width="100" height="100">
+</div>
+Footwear.component.html
+<div>
+ <h2>Footwear Home</h2>
+ <img src="assets/shoe.jpg" width="100" height="100">
+ <img src="assets/nike.jpg" width="100" height="100">
+</div>
+Pagenotfound.component.html
+<h2>Page your requested - Not Found</h2>
+5. Go to “app-routing.module.ts” in app folder
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { ElectronicsComponent } from './electronics/electronics.component';
+import { FootwearComponent } from './footwear/footwear.component';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+const routes: Routes = [
+ {path: 'home', component: HomeComponent},
+ {path: 'electronics', component: ElectronicsComponent},
+ {path: 'footwear', component: FootwearComponent},
+ {path: '', redirectTo: 'home', pathMatch: 'full' },
+ {path: '**', component: PagenotfoundComponent}
+];
+@NgModule({
+ imports: [RouterModule.forRoot(routes)],
+ exports: [RouterModule]
+})
+export class AppRoutingModule { }
+6. Go to “app.component.html”
+<div class="container-fluid">
+ <h2 class="text-center text-primary"><span class="fa fa-shopping-cart"></span>Flipkart
+Shopping</h2>
+ <div class="row" style="margin-top: 50px;">
+ <div class="col-3">
+ <ul class="list-unstyled">
+ <li>
+ <a routerLink="home" class="btn btn-danger btn-block"><span class="fa fa-home"></span>Home</a>
+ </li>
+ <li>
+ <a routerLink="electronics" class="btn btn-danger btn-block"><span class="fa fa-tv"></span>Electornics</a>
+ </li>
+ <li>
+ <a routerLink="footwear" class="btn btn-danger btn-block"><span class="fa fa-shoeprints"></span>Footwear</a>
+ </li>
+ </ul>
+ </div>
+ <div class="col-9">
+ <router-outlet></router-outlet>
+ </div>
+ </div>
+</div>
+7. Go to app.component.css
+ul > li {
+ color:white;
+ margin-bottom: 20px;
+}
+
+Route Parameters:
+=================
+- Web application use Query String to transport data across requests.
+Page ? name=value & name=value
+
+Shopping.html?category=electronics&subcategory=mobiles&model=Samsung
+
+- Query String allows 2048 chars. 
+- When Routing is implemented you can configure “Route Parameters”
+- Route Parameters are safe and provide an easy technique to query any content in page. 
+- Route Parameters are configured in route path
+{ path: ‘name/:param1/:param2, component: ComponentName }
+- Actual values are passed into parameters by using following technique
+Url : localhost:4200/home/param1/param2 …
+Shopping/electronics/mobiles/Samsung
+Link: <a routerLink=”home/value1/value2”>
+Param1 = value1
+Param2 = value2
+- You can access and use the parameters in any component by “ActivatedRoute” module
+  private route : ActivatedRoute
+  this.route.snapshot.paramMap.get(‘param1’)
+Ex:
+1. Add a new component
+ng g c search
+2. Go to “app-routing.module.ts” and add
+{path: 'search/:id/:name/:price', component: SearchComponent},
+3. Go to “app.component.html”
+<li>
+ <a routerLink="search/1/mobile/45000" class="btn btn-danger btn-block"><span
+class="fa fa-search"></span>Search</a>
+ </li>
+4. Go to search.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+@Component({
+ selector: 'app-search',
+ templateUrl: './search.component.html',
+ styleUrls: ['./search.component.css']
+})
+export class SearchComponent implements OnInit {
+ constructor(private route: ActivatedRoute) { }
+ public id;
+ public name;
+ public price;
+ ngOnInit(): void {
+ this.id = this.route.snapshot.paramMap.get('id');
+ this.name = this.route.snapshot.paramMap.get('name');
+ this.price = this.route.snapshot.paramMap.get('price');
+ }
+}
+5. Go to search.component.html
+<div>
+ <dl>
+ <dt>Id</dt>
+ <dd>{{id}}</dd>
+ <dt>Name</dt>
+ <dd>{{name}}</dd>
+ <dt>Price</dt>
+ <dd>{{price}}</dd>
+ </dl>
+</div>
+Ex: Route Parameters
+1. Generate a new Service
+ng g service data --skipTest
+“data.service.ts”
+import { Injectable } from '@angular/core';
+@Injectable({
+ providedIn: 'root'
+})
+export class DataService {
+ constructor() { }
+ public GetCategories(){
+ return [
+ {CategoryId: 1, CategoryName: 'Electronics' },
+ {CategoryId: 2, CategoryName: 'Footwear'}
+ ];
+ }
+ public GetProducts(){
+ return [
+ {ProductId: 1, Name: 'JBL Speaker', Price: 4500.55, CategoryId: 1},
+ {ProductId: 2, Name: 'Earpods', Price: 2500.55, CategoryId: 1},
+ {ProductId: 3, Name: 'Nike Casuals', Price: 5500.55, CategoryId: 2},
+ {ProductId: 4, Name: 'Lee Cooper Boot', Price: 3500.55, CategoryId: 2}
+ ];
+ }
+}
+2. Register Service in “app.module.ts”
+providers: [DataService]
+3. Add following components
+ng g c categorieslist --skipTests
+ng g c productslist --skipTest
+4. Categorieslist.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+@Component({
+ selector: 'app-categorieslist',
+ templateUrl: './categorieslist.component.html',
+ styleUrls: ['./categorieslist.component.css']
+})
+export class CategorieslistComponent implements OnInit {
+ public categories = [];
+ constructor(private data: DataService) { }
+ ngOnInit(): void {
+ this.categories = this.data.GetCategories();
+ }
+}
+5. Categorieslist.component.html
+<h2>Categories List</h2>
+<ol>
+ <li *ngFor="let item of categories">
+ <a routerLink="{{item.CategoryId}}">{{item.CategoryName}}</a>
+ </li>
+</ol>
+6. Productslist.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+import { ActivatedRoute } from '@angular/router';
+@Component({
+ selector: 'app-productslist',
+ templateUrl: './productslist.component.html',
+ styleUrls: ['./productslist.component.css']
+})
+export class ProductslistComponent implements OnInit {
+ public products = [];
+ public categoryId;
+ constructor(private data: DataService, private route: ActivatedRoute) { }
+ ngOnInit(): void {
+ this.categoryId = this.route.snapshot.paramMap.get('id');
+ this.products = this.data.GetProducts().filter(x=>x.CategoryId==this.categoryId);
+ }
+}
+7. Productslist.component.html
+<div>
+ <h2>Products List</h2>
+ <ol>
+ <li *ngFor="let item of products">
+ {{item.Name}} - {{item.Price}}
+ </li>
+ </ol>
+ <a routerLink="/categories">Back to Categories</a>
+</div>
+8. Go to “app-routing.module.ts”
+ {path: 'categories', component: CategorieslistComponent},
+ {path: 'categories/:id', component: ProductslistComponent},
+9. Go to “app.component.html” add menu item in navigation
+<li>
+ <a class="btn btn-danger btn-block" routerLink="categories">Categories</a>
+ </li>
+
+Configuring Child Routes:
+========================
+- Child routes are used to define navigation with in the component. 
+- It configures a route with in the current route. 
+- You can define by using “children” attribute.
+const routes : Routes = [
+{ path: ‘parent’ , component: ParentComponent,
+children: [
+ { path: ‘child’, component: ChildComponent }
+]
+},]
+
+- Redirection with in component is configured by using “navigate()” of “RouterModule”
+this.router.navigate([‘path’, param], { relativeTo: this.route })
+10. Add a new component
+ng g c productdetails --skipTests
+11. Go to “app-routing.module.ts”
+{path: 'categories/:id', component: ProductslistComponent,
+ children: [
+ {path: 'details/:id', component: ProductdetailsComponent}
+ ]
+ },
+12. Productslist.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+import { ActivatedRoute, Router } from '@angular/router';
+@Component({
+ selector: 'app-productslist',
+ templateUrl: './productslist.component.html',
+ styleUrls: ['./productslist.component.css']
+})
+export class ProductslistComponent implements OnInit {
+ public products = [];
+ public categoryId;
+ constructor(private data: DataService, private route: ActivatedRoute, private router:
+Router) { }
+ ngOnInit(): void {
+ this.categoryId = this.route.snapshot.paramMap.get('id');
+ this.products = this.data.GetProducts().filter(x=>x.CategoryId==this.categoryId);
+ }
+ public GetDetailsClick(item) {
+ this.router.navigate(['details', item.ProductId], {relativeTo: this.route});
+ }
+}
+13. Productslist.component.html
+<div>
+ <div class="row">
+ <div class="col-4">
+ <h2>Products List</h2>
+ <ol>
+ <li *ngFor="let item of products">
+ <button (click)="GetDetailsClick(item)" class="btn btn-link">
+ {{item.Name}}
+ </button>
+ </li>
+ </ol>
+ <a routerLink="/categories">Back to Categories</a>
+ </div>
+ <div class="col-8">
+ <router-outlet></router-outlet>
+ </div>
+ </div>
+</div>
+14. Go to productdetails.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+import { ActivatedRoute } from '@angular/router';
+@Component({
+ selector: 'app-productdetails',
+ templateUrl: './productdetails.component.html',
+ styleUrls: ['./productdetails.component.css']
+})
+export class ProductdetailsComponent implements OnInit {
+ public productid;
+ public searchedproduct = [];
+ constructor(private data: DataService, private route: ActivatedRoute) { }
+ ngOnInit(): void {
+ this.productid = this.route.snapshot.paramMap.get('id');
+ this.searchedproduct = this.data.GetProducts().filter(x=>x.ProductId==this.productid);
+ }
+}
+15. Productdetails.component.html
+<h2>Product Details</h2>
+<dl>
+ <dt>Product Id</dt>
+ <dd>{{searchedproduct[0].ProductId}}</dd>
+ <dt>Name</dt>
+ <dd>{{searchedproduct[0].Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{searchedproduct[0].Price}}</dd>
+</dl>
+
+Lazy Loading:
+=============
+- Eager Loading
+- Lazy Loading
+- All Angular modules “NgModules” are eagerly loaded. 
+- Modules are loaded along with application. 
+- It makes application heavy on browser. 
+- It makes page rendering slow. 
+- Even when you are not using any specific module it is loaded into memory. 
+- Lazy loading is a design pattern. 
+- Lazy loading allows to load “NgModules” only when they are required. 
+- It keeps initial bundle size smaller. 
+- It improves the render time. 
+- It decreases the page load time. 
+- It is more light weight on browser.
+Ex:
+1. Go to your Workspace
+2. Add a new Application with routing enabled
+ ng generate application Shopping --routing
+3. Open you shopping “app” folder in “Integrated Terminal” and Generate Modules
+ ng g module vendors --route vendors --module app.module
+ ng g module customers --route customers --module app.module
+4. Every modules comprises of following files
+- customers-routing.module.ts [Child Routes]
+- customer.module.ts [child modules registration]
+- customer.component.ts
+- customer.component.html
+- customer.component.css
+5. Customers-routing.module.ts
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { CustomersComponent } from './customers.component';
+const routes: Routes = [{ path: '', component: CustomersComponent }];
+@NgModule({
+ imports: [RouterModule.forChild(routes)],
+ exports: [RouterModule]
+})
+export class CustomersRoutingModule { }
+6. App-routing.modue.ts
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+const routes: Routes = [{ path: 'vendors', loadChildren: () =>
+import('./vendors/vendors.module').then(m => m.VendorsModule) }, { path: 'customers',
+loadChildren: () => import('./customers/customers.module').then(m => m.CustomersModule) }];
+@NgModule({
+ imports: [RouterModule.forRoot(routes)],
+ exports: [RouterModule]
+})
+export class AppRoutingModule { }
+MEAN
+M - MongoDB Database
+E - Express Middleware
+A - Angular Client Side [ HttpClient ] – RXJS [JavaScript Library]
+N - Node JS Server Side

@@ -1,0 +1,158 @@
+	            Event Binding in Angular
+- Event is a message sent by sender to its subscriber in order to notify the change.
+- It following a software design pattern called Observer.
+- It is a communication pattern.
+
+ Syntax:
+	function f1() {
+	}
+
+	<button onclick="f1()"> Submit </button>
+
+	onclick		→ Event
+	onclick="f1()"	→ Event Handler / Sender
+	function f1()	→ Subscriber
+- Events are not related to controls, they are related to browser [window].
+- Angular can use all JavaScript browser events.
+- Angular Events are derived from "EventEmitter" base
+- EventEmitter emits a value.
+- You can create your own events by implementing EventEmitter.
+- Angular Events are defined in "( )"
+
+Syntax:
+	<button  (click)="f1()"> </button>
+- Angular can use all JavaScript browser events, which are categorized into following groups
+	a) Mouse Events
+		mouseover
+		mouseout
+		mousedown
+		mouseup
+		mousemove
+	b) Key Events
+		keyup
+		keydown
+		keypress
+	c) Timer Events
+		setInterval
+		clearInterval
+		setTimeout
+		clearTimeout
+	d) Miscelaneous Events
+		cut, copy, paste, blur, focus,
+		submit, dblclick, contextmenu
+		select, selectstart, change etc..
+
+Event Arguments
+- Event arguments allow the function to know about the event as well as the object.
+- Angular support "$event" as an argument for event, which can give access to event and object related properties.
+- $event requires a formal parameter in the subscriber that access event properties.
+
+	public  Method(e)
+	{
+	}
+	<button (click)="Method($event)">
+
+- The event formal parameter directly can give access to event properties only.
+	e.clientX
+	e.clientY
+	e.keyCode
+	e.altKey
+- The event formal parameter can give access to object related properties by using "target" object.
+	e.target.value
+	e.target.name
+	e.target.id  etc..
+
+Ex:
+1. eventdemo.component.ts
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-eventdemo',
+  templateUrl: './eventdemo.component.html',
+  styleUrls: ['./eventdemo.component.css']
+})
+export class EventdemoComponent {
+  public msg;
+  public Database(e){
+     switch(e.target.value) {
+       case 'Insert':
+       this.msg = 'Record Inserted';
+       break;
+       case 'Delete':
+         this.msg = 'Record Deleted';
+         break;
+     }
+  }
+
+}
+
+
+2. eventdemo.component.html
+
+<div class="container">
+  <div class="form-group">
+     {{msg}}
+  </div>
+  <div class="form-group">
+    <button value="Insert" (click)="Database($event)">Insert</button>
+    <button value="Delete" (click)="Database($event)">Delete</button>
+  </div>
+</div>
+
+
+Ex: Event Properties
+
+1. .ts
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-eventdemo',
+  templateUrl: './eventdemo.component.html',
+  styleUrls: ['./eventdemo.component.css']
+})
+export class EventdemoComponent {
+  public msg;
+  public Database(e){
+     switch(e.target.value) {
+       case 'Insert':
+       this.msg = 'Record Inserted';
+       break;
+       case 'Delete':
+         this.msg = 'Record Deleted';
+         break;
+     }
+  }
+  public ImageClick(e){
+       if(e.ctrlKey == true) {
+         window.open('assets/shirt.jpg','shirt','width=500 height=400');
+       } else {
+         alert('Please use Ctrl  + Click');
+       }
+  }
+}
+
+
+2. .html
+
+<div class="container">
+  <div class="form-group">
+    <img (click)="ImageClick($event)" src="assets/shirt.jpg" width="100" height="100">
+    <p>Use Ctrl + Click to Open in New Window</p>
+  </div>
+  <div class="form-group">
+     {{msg}}
+  </div>
+  <div class="form-group">
+    <button value="Insert" (click)="Database($event)">Insert</button>
+    <button value="Delete" (click)="Database($event)">Delete</button>
+  </div>
+</div>
+
+
+
+	
+
+

@@ -1,0 +1,148 @@
+		Angular Directives
+- Directive is a function.
+- It is used to make HTML elements more declarative.
+- It transforms static DOM element into dynamic DOM.
+- Directives have different types of functionalities, they can be used as:
+	a) Element	
+	b) Attribute
+	c) Class
+	d) Comment
+- Directive is used as element to return a markup
+	<ng-form> </ng-form>
+	<router-outlet> </router-outlet>
+
+- Directive is used as attribute to extend the markup.
+          <input type="text"  ngModel #txtName="ngModel">
+
+- Directive is used as class to apply effects for markup.
+	.ng-valid {  }
+	.ng-pristine { }
+
+- Directive is used as comment to target legacy browser.
+	<!-- ngModel="txtName" -->
+ 
+- Angular Directives are classified into 3 groups
+	a) Component Directives
+	b) Structural Directives
+	c) Attribute Directives
+
+Component Directive
+- The component directive is the most common directive in Angular.
+- It is a template that comprises of logic, presentation and effects.
+- It is used for dynamically rendering HTML and handle interaction with user.
+
+Ex:
+	home.component.html
+	<app-home> </app-home>
+
+		Structural Directive
+		================
+- It is responsible for changing the DOM structure dynamically in UI.
+- It can add or remove element, it can iterate over element, it can switch between elements etc..
+- Angular structural directives as 	
+	a) NgIF		ngIf
+	b) NgFor		ngFor
+	c) NgSwitch	ngSwitch
+- Structural directives are added to HTML element as attributes with asterisk [*].
+ 
+	<div  *ngIf="">
+	<li *ngFor="">
+- Every HTML element can use only one structrual directive.
+
+	<li  *ngFor=""   *ngIf="">  // invalid
+
+
+		  NgIf  Directive
+		==============
+- It is a structrual directive used to control the structure of DOM by adding and removing element.
+- It can conditionally add or remove elements from DOM.
+
+Hide Picture:
+<img  style="display:none">  Hidden but still available in 
+		               DOM.
+Show Picture:
+ <img style="display:block">
+
+Syntax: Simple Condition
+
+	<div  *ngIf="booleanValue/Expression"> </div>
+	<div  *ngIf="condition"> </div>
+
+Ex:
+ 1. Add a new component
+	> ng g c  ifdemo  --skipTests=true
+
+2. ifdemo.component.ts
+
+export class IfdemoComponent {
+  public product = {
+    Name: 'Levis Shirt',
+    Price: 4500.55,
+    Photo: 'assets/shirt.jpg'
+  };
+  public showImage = false;
+  public btnText = 'Show';
+  public TogglePreview() {
+     this.showImage = (this.showImage==false) ? true : false;
+     this.btnText = (this.btnText=='Show') ? 'Hide' : 'Show';
+  }
+}
+
+3. ifdemo.component.html
+
+<div class="container-fluid">
+ <h2>Product Details</h2>
+ <div class="row">
+   <div class="col-3">
+      <dl>
+          <dt>Name</dt>
+          <dd>{{product.Name}}</dd>
+          <dt>Price</dt>
+          <dd>{{product.Price}}</dd>
+      </dl>
+      <button (click)="TogglePreview()" class="btn btn-primary btn-sm"> {{btnText}} Preview </button>
+   </div>
+   <div class="col-9">
+        <div *ngIf="showImage">
+            <img [src]="product.Photo" width="200" height="200" class="img-thumbnail">
+        </div>
+        
+   </div>
+ </div>
+</div>
+
+
+
+
+
+
+Syntax: With Else block
+	
+	<div *ngIf="condition; else elseBlockId">
+
+ Syntax: With then and Else
+	
+	if condition then
+	 statement
+	else
+	 statement
+ 
+  <div *ngIf="condition; then thenBlockId else elseBlockId">
+
+Ex: ifdemo.component.html
+
+
+<div class="row" style="margin: 40px;">
+    <div *ngIf="true; then thenBlock else elseBlock">
+    </div>
+    <ng-template #thenBlock>
+        Statement if true
+    </ng-template>
+    <ng-template #elseBlock>
+        Statement if false
+    </ng-template>
+ </div>
+
+
+
+

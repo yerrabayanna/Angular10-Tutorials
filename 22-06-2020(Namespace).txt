@@ -1,0 +1,102 @@
+		Namespace
+- A Namespace is a collection of related type of sub namespaces and classes.
+- A Namespace is configured by using "namespace" keyword.
+Syntax:
+       namespace  namespaceName {
+	// members
+       }
+
+- The members of accessed by using the reference of namespace.
+
+Syntax:
+	namespaceName.className
+
+- You can alias namespaces
+
+var  shortName = namespaceName.childNamespaceName;
+ 
+Ex:
+1. Add a new folder
+		"Namespaces"
+
+2. Add sub folders
+	- Contracts
+	- Templates
+	- Components
+	- App
+
+3. Add file into contracts
+	ProductContract.ts
+
+namespace Project {
+    export namespace ProductContract {
+        export interface IProduct {
+            Name:string;
+            Price:number;
+            Qty:number;
+            Total():number;
+            Print():void;
+        }
+    }
+}
+
+4. add file into Templates
+	ProductTemplate.ts
+
+/// <reference path="../Contracts/ProductContract.ts" />
+
+namespace Project {
+    export namespace ProductTemplateNamespace {
+        export abstract class ProductTemplateClass implements Project.ProductContract.IProduct {
+            public Name:string = "";
+            public Price:number = 0;
+            public Qty:number = 0;
+            public abstract Total():number;
+            public Print():void {
+                console.log(`Name=${this.Name}\nPrice=${this.Price}\nQty=${this.Qty}\nTotal=${this.Total()}`);
+            }
+        }
+    }
+}
+
+
+5. Add file into  Components
+	ProductComponent.ts
+
+/// <reference path="../Templates/ProductTemplate.ts" />
+namespace Project {
+    export namespace ProductComponentNamespace {
+        export class ProductComponentClass extends Project.ProductTemplateNamespace.ProductTemplateClass{
+            public Name:string = "TV";
+            public Price:number = 45000.55;
+            public Qty:number = 2;
+            public Total():number {
+                return this.Qty * this.Price;
+            }
+            public Print():void {
+                super.Print();
+            }
+        } 
+    }
+}
+
+
+6. Add file into App folder
+	MyApp.ts
+
+///<reference path="../Components/ProductComponent.ts" />
+
+let lib = Project.ProductComponentNamespace;  // aliasing of namespace
+let obj = new lib.ProductComponentClass();
+obj.Print();
+
+
+7. Compile
+	>tsc --outFile  myapp.js  myapp.ts
+	> node myapp.js
+
+
+           
+       
+
+

@@ -1,0 +1,40 @@
+
+
+		"app.module.ts"
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+      // Components are registered here..
+  ],
+  imports: [
+      // Modules are registered here...
+  ],
+  providers: [
+     // Services are Registered here...
+  ],
+  bootstrap: [ 
+     // components to start with..
+  ]
+})
+export class AppModule { }
+
+
+Bootstrapping is the process of converting the static DOM into Dynamic DOM.
+
+		Angular Architecture
+Module - Comprises of factories with data and logic,
+                factory is a collection of functions.
+Services  - They represent singleton
+Components - Template for interaction
+Directives   - Injects components into page
+Metadata   - Information about components, services, 
+	   pipes.
+
+
+
+

@@ -1,0 +1,24 @@
+		Angular Materials
+- Material is similar to Bootstrap templates with Jquery
+- Material is designed by Angular Team for better performance in Angular.
+
+Setup Angular Material for your Project
+=================================
+1. Open Your App folder in terminal
+    >ng add @angular/material
+    ? Which theme - Indigo - Pink
+    ? Set up global Angular Material typography styles? Y
+    ? Set up browser animations for Angular Material? Y
+
+2. Goto "styles.css"
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+Ex: Button - Material 
+- You need a material button library
+	"MatButtonModule"
+- @angular/material/button
+
+
+

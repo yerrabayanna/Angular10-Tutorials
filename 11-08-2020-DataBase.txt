@@ -1,0 +1,39 @@
+Database:
+========
+  -MongoDb
+
+	* Document oriented
+	* javascript based
+	* open source
+	* cross platform
+	* non-sql
+	* non-RDBMS
+  
+-> setup environment for Mongodb:
+	- Download mongodb database server
+	   https://www.mongodb.com/try/download/community
+
+	- Start MongoDb database server
+	    - Go to "Services.msc" in windows run option
+	    - Right click on "Mongodb" server and start
+
+	- open MongoDb client
+	    - open command prompt
+	    - Change to the following and execute the command "mongo.exe"
+	      c:\program files\MongoDB\server\4.4\bin\>"mongo.exe"
+
+
+- mongoDb Commands[Case Sensitive]
+
+	Command				Description
+	=======				============
+	
+ show dbs				To view the list of all databases.
+
+ db					To view the active Database.
+
+ use					To Switch to exsting database or to create a new database.
+ 					> use new DatabaseName
+ 
+ db.createCollection("collectionName")  Create a new DB Table
+ 

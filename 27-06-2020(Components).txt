@@ -1,0 +1,200 @@
+	             Angular Components
+- Components are building-blocks for Angular Application.
+- Application is built by using components.
+- User interacts with our application using Components.
+- Component is technically like a Template with
+	Presentation - HTML
+	Logic	     - TypeScript
+	Effects	     - CSS
+- You can reuse the components across application.
+- Components can be accessed using "Asynchronous" calls so that user will a Fluid UX.
+- Without reloading the complete page we can add new details to page.
+- Component is a TypeScript class that implements "Component" base class defined in "@angular/core" library.
+
+ 		HomeComponent.ts
+  import  { Component } from '@angular/core'; 
+  export class HomeComponent {
+
+  }
+
+- The component behaviour is provided to any component by using "Component" meta data.
+- Component base class provides "@Component()" directive that defines the meta data, which is a Type Decorator for Component.
+
+- @Component : Decorator that marks a class as an Angular component and provides configuration metadata that determines how the component should be processed, instantiated, and used at runtime.
+
+
+	HomeComponent.ts
+  import  { Component } from '@angular/core'; 
+  
+  @Component()
+  export class HomeComponent {
+
+  }
+
+- Component meta data comprises of several properies and methods, which includes details about 
+	a) what markup to be rendered
+	b) how the component need to be accessed
+	c) from where the logic for component comes 
+	d) what animations and effects component uses..
+	    etc..
+
+Syntax:
+@Component({
+          selector:
+          template:
+          templateUrl:
+          styles:
+          stylesUrl:
+          animations:  etc..
+   })
+
+ selector	→ defines a markup for access the component
+		app-home
+		<app-home> </app-home>
+ template   → defines the markup to rendered. You can
+	     directly design markup here.
+
+ templateUrl → specifies the path of file that contains 	         markup to render.
+ 
+  styles	 → the css effects to render
+  stylesUrl  → the css file name from where the effects are
+	      accessed.
+
+
+
+
+
+Various Techniques for Adding a Component into App:
+=============================================
+1. Adding Explicitly
+	- You have to add all files and configurations for component manually.
+	- You have to register component for app.
+	- You have to define it dependencies.
+2. Adding using CLI Commands
+	- It generates all files for you
+	- It registers and injects all dependencies.
+
+Component Have Two Documentation Techniques
+==========================================
+1. Inline Documentation : 
+	In this technique the presentation, logic and effects all are defined in one file. 
+	Extensibility and separation issues.
+
+2. Code Behind:
+	In this technique presentation, logic and effects all are maintained in different files.
+	Easy to extend and no separation issues.
+	Number of requests will increase, which will increase the page load time.
+
+
+Ex: Adding component using inline technique manually
+
+1. Goto "Projects\Amazon\src\app"
+2. Add a new File by name
+		"home.component.ts"
+
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'app-home',
+    template: `
+    <h2>{{title}}</h2>
+    <p>Welcome to Angular-9</p>
+    `,
+    styles: ['h2{color:blue; text-align:center}', 'p{text-align:center}']
+})
+export class HomeComponent {
+ public title = 'Amazon Shopping';
+}
+
+3. Goto "app.module.ts" and Register your component
+
+     import { HomeComponent } from './home.component';
+
+     @NgModule({
+          declarations: [
+                 ............
+   	HomeComponent
+           ],
+            .........
+       })
+
+4. Bootstrap with HomeComponent
+
+    @NgModule({
+        bootstrap: [HomeComponent]
+    })
+
+5. Goto "index.html" 
+       <body>
+          <app-home> </app-home>
+       </body>
+
+
+Ex: Adding component using code behind technique manually
+
+1. Goto App folder and add a new sub folder by name
+	"login"
+
+2. Add following files into  login folder
+	- login.component.ts
+	- login.component.html
+	- login.component.css
+
+3. login.component.ts
+
+import { Component } from '@angular/core';
+@Component({
+    selector: 'app-login',
+    templateUrl: 'login.component.html',
+    styleUrls: ['login.component.css']
+})
+export class LoginComponent {
+  public title = 'User Login';
+}
+
+4. login.component.html
+
+<div class="box">
+  <h2>{{title}}</h2>
+  <div class="group">
+      <label>User Name</label>
+      <div>
+          <input type="text">
+      </div>
+  </div>
+  <div class="group">
+      <label>Password</label>
+      <div>
+          <input type="password">
+      </div>
+  </div>
+  <div class="group">
+    <button>Login</button>
+  </div>
+</div>
+
+4. login.component.css
+
+.box {
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+    width:300px;
+    border:2px solid darkcyan;
+    box-shadow: 2px 2px 3px darkcyan;
+    padding: 10px;
+    margin-top: 20px;
+}
+.group {
+    margin-bottom: 20px;
+}
+button {
+    background-color: darkcyan;
+    color:white;    
+}
+
+
+
+
+
+

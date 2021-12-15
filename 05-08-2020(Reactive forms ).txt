@@ -1,0 +1,280 @@
+Custom Validation:
+=================
+- You can write a validation function to verify the input value. 
+- You can conditionally display error messages.
+Ex:
+1. Formvalidation.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-formvalidation',
+ templateUrl: './formvalidation.component.html',
+ styleUrls: ['./formvalidation.component.css']
+})
+export class FormvalidationComponent {
+ public displayCityError = false;
+ public displayEvenError = false;
+ public onCityChanged(val){
+ if(val == 'nocity') {
+ this.displayCityError = true;
+ } else {
+ this.displayCityError = false;
+ }
+ }
+ public VerifyEvenNumber(val){
+ if(val %2 == 0) {
+ this.displayEvenError = false;
+ } else {
+ this.displayEvenError = true;
+ }
+ }
+}
+2. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text"
+ name="txtName" minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ <dt>Your City</dt>
+ <dd>
+ <select (change)="onCityChanged(lstCities.value)" ngModel #lstCities="ngModel"
+ name="lstCities" class="form-control">
+ <option value="nocity">Select a City</option>
+ <option value="Delhi">Delhi</option>
+ <option value="Hyd">Hyd</option>
+ </select>
+ <span *ngIf="displayCityError" class="text-danger">Please Select a City</span>
+ </dd>
+ <dl>
+ <dt>Enter Even Number</dt>
+ <dd>
+ <input (blur)="VerifyEvenNumber(txtEven.value)" type="text" name="txtEven"
+ ngModel #txtEven="ngModel" class="form-control">
+ <span *ngIf="displayEvenError" class="text-danger">Not an Even Number</span>
+ </dd>
+ </dl>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>
+
+Angular CSS validation classes:
+===============================
+- Angular provides a set of CSS validation classes 
+- These classes can identify the validation state of form or input element and apply effects.
+
+ Class Name 		Description
+===========             ===========
+
+.ng-valid 		Apply effects to input or form when it is valid.
+.ng-invalid
+.ng-pristine
+.ng-dirty
+.ng-touched
+.ng-untouched
+Ex:
+1. Formvalidation.component.css
+button:disabled {
+ cursor: not-allowed;
+}
+input.ng-invalid {
+ border: 1px solid red;
+ box-shadow: 2px 2px 3px red;
+}
+input.ng-valid {
+ border:1px solid green;
+ box-shadow: 2px 2px 3px green;
+}
+.errorStyle {
+ border: 1px solid red;
+ box-shadow: 2px 2px 3px red;
+}
+.validStyle {
+ border:1px solid green;
+ box-shadow: 2px 2px 3px green;
+}
+2. Formvalidation.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-formvalidation',
+ templateUrl: './formvalidation.component.html',
+ styleUrls: ['./formvalidation.component.css']
+})
+export class FormvalidationComponent {
+ public displayCityError = false;
+ public cityValidClass = false;
+ public cityInvalidClass = false;
+ public displayEvenError = false;
+ public onCityChanged(val){
+ if(val == 'nocity') {
+ this.displayCityError = true;
+ this.cityInvalidClass = true;
+ this.cityValidClass = false;
+ } else {
+ this.displayCityError = false;
+ this.cityInvalidClass = false;
+ this.cityValidClass= true;
+ }
+ }
+ public VerifyEvenNumber(val){
+ if(val %2 == 0) {
+ this.displayEvenError = false;
+ } else {
+ this.displayEvenError = true;
+ }
+ }
+}
+3. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text" name="txtName"
+ minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ <dt>Your City</dt>
+ <dd>
+ <select [ngClass]="{errorStyle:cityInvalidClass, validStyle:cityValidClass}"
+ (change)="onCityChanged(lstCities.value)" ngModel #lstCities="ngModel" name="lstCities"
+ class="form-control">
+ <option value="nocity">Select a City</option>
+ <option value="Delhi">Delhi</option>
+ <option value="Hyd">Hyd</option>
+ </select>
+ <span *ngIf="displayCityError" class="text-danger">Please Select a City</span>
+ </dd>
+ <dl>
+ <dt>Enter Even Number</dt>
+ <dd>
+ <input required (blur)="VerifyEvenNumber(txtEven.value)" type="text" name="txtEven"
+ ngModel #txtEven="ngModel" class="form-control">
+ <span *ngIf="displayEvenError" class="text-danger">Not an Even Number</span>
+ </dd>
+ </dl>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>
+				   Reactive Forms or Model Driven Forms
+				   ====================================
+- Reactive forms provide Model driven approach. 
+- They are bound to model so that any change in model will update the view. 
+- Configuration of forms and controls are defined at application logic level. 
+- Easy to extent and loosely coupled. 
+- Easy to test. 
+- Clean separation of functionality and presentation (Implementation and Design). 
+- Reactive forms are asynchronous, they allow to submit only a specific port of form. 
+- They support partial updates. 
+- You can dynamically add or remove controls from form. 
+- The library required for configuration and implementation of reactive forms is
+ @angular/forms with following classes.
+	o ReactiveFormsModule
+	o FormsModule
+ app.module.ts
+ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+ imports: [
+	FormsModule,
+        ReactiveFormsModule
+  ]
+Configure a Form Control:
+========================
+- The form elements like textbox, checkbox, radio, dropdown, list etc. are configured by using
+  “FormControl” base. 
+- FormControl is the base for creating a form element.
+Syntax:
+Public elementName = new FormControl(‘value’, options); 
+- It is implemented in UI by using “[formControl]” property
+Syntax:
+ <input type=”text” [formControl]=”elementName”>
+- Dynamically you can set value or update value by using the functions
+	o setValue()
+	o patchValue()
+Syntax:
+this.elementName.setValue(‘somevalue’);
+Ex:
+1. reactivedemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+@Component({
+ selector: 'app-reactivedemo',
+ templateUrl: './reactivedemo.component.html',
+ styleUrls: ['./reactivedemo.component.css']
+})
+export class ReactivedemoComponent {
+ public txtName = new FormControl('');
+ public lstCities = new FormControl('');
+ public UpdateClick() {
+ this.txtName.setValue('LG Mobile');
+ this.lstCities.setValue('Hyd');
+ }
+}
+2. reactivedemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input [formControl]="txtName" type="text" class="form-control">
+ </dd>
+ <dt>Select City</dt>
+ <dd>
+ <select [formControl]="lstCities" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <button (click)="UpdateClick()" class="btn btn-primary btn-block">Update</button>
+ </dl>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{txtName.value}}</dd>
+ <dt>City</dt>
+ <dd>{{lstCities.value}}</dd>
+ </dl>
+ </div>
+ </div>
+</div>

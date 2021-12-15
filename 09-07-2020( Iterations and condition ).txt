@@ -1,0 +1,149 @@
+- To identify the iterating object you can use index property of "ngFor".
+- Index just defines its occurance index number not all the details of iterating object.
+- You can also pass the object into iterator function and handle its details.
+
+Ex: 
+1. likesdemo.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-likesdemo',
+  templateUrl: './likesdemo.component.html',
+  styleUrls: ['./likesdemo.component.css']
+})
+export class LikesdemoComponent {
+  public products = [
+    {Name: 'Nike Casuals', Photo: 'assets/shoe.jpg', Likes: 0, Dislikes: 0},
+    {Name: 'Shirt', Photo: 'assets/shirt.jpg', Likes: 0, Dislikes: 0},
+    {Name: 'Earpods', Photo: 'assets/earpods.jpg', Likes: 0, Dislikes: 0},
+  ];
+  public LikesCounter(product) {
+      product.Likes++;
+  }
+  public DislikesCounter(product) {
+      product.Dislikes++;
+  }
+}
+
+2. likesdemo.component.html
+
+<div class="container-fluid">
+  <h2>Products Catalog</h2>
+  <div class="card-deck">
+   <div class="card" *ngFor="let product of products">
+    <div class="card-header">
+        <h4>{{product.Name}}</h4>
+    </div>
+    <div class="card-body text-center">
+        <img [src]="product.Photo" width="100" height="100" >
+    </div>
+    <div class="card-footer">
+        <button (click)="LikesCounter(product)" class="btn btn-outline-success">
+            [{{product.Likes}}] Like(s)
+            <span class="fa fa-thumbs-up"></span>
+        </button>
+        <button (click)="DislikesCounter(product)" class="btn btn-outline-danger">
+            [{{product.Dislikes}}] Dislike(s)
+            <span class="fa fa-thumbs-down"></span>
+        </button>
+    </div>
+   </div>
+  </div>
+</div>
+
+		Iterations and Conditions
+- A single HTML element can't be defined with multiple structural directive.
+- Iterations and condition can't be defined directly in single element. You have to use a container for iterations and another container with the context for conditions.
+
+ <ng-container  *ngFor="let item of collection">
+     <div *ngIf="booleanValue/Expression">
+     </div>
+ </ng-container>
+
+Ex: 
+1. conditions.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-conditions',
+  templateUrl: './conditions.component.html',
+  styleUrls: ['./conditions.component.css']
+})
+export class ConditionsComponent {
+  public products = [
+    {Name: 'Nike Casuals', Photo: 'assets/shoe.jpg', Category: 'Footwear'},
+    {Name: 'Shirt', Photo: 'assets/shirt.jpg', Category: 'Fashion'},
+    {Name: 'Earpods', Photo: 'assets/earpods.jpg', Category: 'Electronics'},
+    {Name: 'Lee Cooper Boot', Photo: 'assets/shoe1.jpg', Category: 'Footwear'},
+    {Name: 'Jeans', Photo: 'assets/jeans.jpg', Category: 'Fashion'},
+  ];
+  public categories = ['All', 'Electronics', 'Footwear', 'Fashion'];
+  public selectedCategory = 'All';
+}
+
+
+2. condition.component.html
+
+<div class="container-fluid">
+ <h2 class="text-primary text-center">Amazon Shopping</h2>
+ <div class="row">
+  <div class="col-2">
+    <div class="form-group">
+        <label>Filter Product</label>
+        <div>
+            <select [(ngModel)]="selectedCategory" class="form-control">
+                <option *ngFor="let item of categories">
+                    {{item}}
+                </option>
+            </select>
+        </div>
+       
+    </div>
+  </div>
+  <div class="col-10">
+    <div class="card-deck">
+        <ng-container  *ngFor="let product of products">
+            <div class="card" *ngIf="selectedCategory=='All' || selectedCategory==product.Category">
+                <img [src]="product.Photo" class="card-img-top" height="200">
+                <div class="card-body">
+                  <h3 class="card-title">{{product.Name}}</h3>
+                </div>
+              </div>
+        </ng-container>
+
+    </div>
+  </div>
+ </div>
+</div>
+
+		Attribute Directives
+- Extend HTML element and its functionality making it more interactive and responsive.
+- The commonly used attribute directives in angular
+	a) ngModel
+	b) ngClass
+	c) ngStyle
+	d) ngDisabled
+	
+ngModel:  It marks HTML element as a model reference, so that the values of element can be stored in a reference and dynamically used within application.
+
+	<input  type="text"  [(ngModel)]="txtName">
+
+ngClass :
+        It marks HTML element with a CSS class making it more interactive and responsive dynamically.
+	It can uses a CSS class dynamically by using 3 reference styles
+	a) refer as string
+	      - when you want single class to apply.	
+	b) refer as array
+	      - when you want multiple class to apply.
+	c) refer as object
+	      - when you want to switch between classes
+
+
+
+
+
+
+
+

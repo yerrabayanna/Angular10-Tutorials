@@ -1,0 +1,103 @@
+  Modules and Namespaces
+- Module in programming is set of components which you can import and use in any application.
+- It allows to mantain your contracts, templates and application library seperately. It enabled reusability and separation.
+- A module comprises of interfaces, abstract classes and classess.
+- JavaScript uses various module systems like
+	Common JS
+	AMD System [Asynchronous Module Distribution]
+- TypeScript can internally handle modules as it is supported with various module systems.
+
+- Every component defined in a module is not accessible outside the module scope . You have to mark with "export"
+
+      Syntax:
+	export interface IName{
+	}
+	export class Component {
+	}
+
+- You can inject any component or module into application by using "import".
+
+    Syntax:
+     import { ClassName, InterfaceName } from '../path/file' ;
+
+Ex:
+1. Add a new Folder by name
+	"ModuleSystem"
+
+2. Add following sub folders
+	- Contracts
+	- Templates
+	- Components
+	- App
+
+3. Goto Contracts folder and add a new file
+	"ProductContract.ts"
+
+export interface IProduct {
+    Name:string;
+    Price:number;
+    Qty:number;
+    Total():number;
+    Print():void;
+}
+export interface ICategory {
+    CategoryId:number;
+}
+
+4. Goto Templates folder and add a new file
+	 "ProductTemplate.ts"
+
+import { IProduct, ICategory } from '../Contracts/ProductContract';
+
+export abstract class ProductTemplate implements IProduct, ICategory {
+  public Name:string;
+  public Price:number;
+  public Qty:number;
+  public CategoryId:number;
+  public abstract Total():number;
+  public Print():void {
+      console.log(`Name=${this.Name}\nPrice=${this.Price}\nQty=${this.Qty}\nTotal=${this.Total()}\nCategoryId=${this.CategoryId}`);
+  }
+}
+
+5. Goto Components folder and add 
+	"ProductComponent.ts"
+
+import { ProductTemplate } from '../Templates/ProductTemplate';
+
+export class ProductComponent extends ProductTemplate {
+    public Name:string = "";
+    public Price:number = 0;
+    public Qty:number = 0;
+    public CategoryId = 0;
+    public Total():number {
+        return this.Qty * this.Price;
+    }
+    public Print():void {
+        super.Print();
+    }
+}
+
+6. Goto "App" folder and add
+	"MyApp.ts"
+
+import { ProductComponent } from "../Components/ProductComponent";
+
+let tv = new ProductComponent();
+tv.Name= "Samsung TV";
+tv.Price = 34000.55;
+tv.Qty = 2;
+tv.CategoryId=1;
+tv.Print();
+console.log(`---------------------------`);
+let shoe = new ProductComponent();
+shoe.Name="Nike Casuals";
+shoe.Price=2000.44;
+shoe.Qty = 2;
+shoe.CategoryId=2;
+shoe.Print();
+
+7. Compile MyApp.ts
+	>tsc myapp.ts
+	>node myapp.js
+

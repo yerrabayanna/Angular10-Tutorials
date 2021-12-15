@@ -1,0 +1,94 @@
+ Application		Purpose
+ Files/Folder
+==================================================
+e2e [End to End] Contains source files for a set of 	
+		 End-to-End tests. It comprises of 
+		 test configurations.
+
+src		It comprises of source files for the
+		 root level applications. It includes
+		app, assets, environments etc..
+
+browserslist	Configures sharing of target browsers			
+		and Node.js versions among various
+		front end tools.
+
+karma.conf.js	Application specific Karma 		
+		configuration. [Testing]
+
+tsconfig.app.json Application specific TypeScript
+		  configuration
+
+tsconfig.spec.json	Testing the typescript configuration.
+
+tslint.json		Application specific TsLint
+
+
+Files in src  folder [Application Source Files]
+==================================================
+src/app		It comprises of application related
+		component, services, pipes, modules
+		etc.. [Application specific logic and data]
+
+src/app/app.module.ts   Application startup configuration
+		      It imports modules required for	
+		      applications.
+		      It registers services used for app.
+		      It defines the application startup.
+
+src/assets	It comprises of non-dynamic files like
+		images, pdf, word, text etc..
+		[Static files]
+
+src/environments     Contains build configuration options	
+		for various target environements like
+		dev, test, production etc.
+
+src/favicon.ico	An icon uses for bookmarking your
+		application.
+
+src/index.html	It is startup page for application.
+
+main.ts		It is entiry point for your application.
+		Compiles the application with
+		JIT compiler, bootstraps application
+		root modules, run in browser.
+		You can also use "AOT-compiler".
+
+		AOT compiles your app and libraries
+		at build time and it is default in 		
+		Angular-9.
+
+		JIT is compiling your app and library
+		at runtime. JIT default in Angular-8,AOT
+		can be enable explicity in Angular 8.
+
+polyfills.ts	Provides polyfill scripts for browser
+		support.
+
+styles.css	It comprises of global styles used for
+		application.
+
+test.ts		It the entry point for testing.
+
+
+Starting with a Project in WorkSpace:
+===============================
+1. Open Terminal
+2. In Workspace you type the following command
+
+    >ng serve  --project=Amazon
+
+   Server starts listening on "http://localhost:4200"
+
+3. Open Browser and Request URL
+	http://localhost:4200
+
+.
+
+
+
+
+
+
+

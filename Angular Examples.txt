@@ -1,0 +1,2703 @@
+1.LifecycleHooks Methos:
+
+app.component.html
+----------------
+<h1>Lifecyclehooks</h1>
+<div >
+  <app-child *ngIf="isVisible" [myNumber]="counter"></app-child>
+  <button type="button" class="btn btn-primary text-center" (click)="increment()">+1</button>
+  <button type="button" class="btn btn-danger text-center" (click)="decrement()">-1</button>
+  <button type="button" class="btn btn-warning" (click)="switchVisibility()">Destroyed</button>
+</div>
+
+
+
+app.component.ts
+-------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  private myNumber = 50 ;
+   isVisible= true ;
+  get counter(){
+    return this.myNumber;
+  }
+  set counter(value){
+    this.myNumber = value ;
+  }
+  increment(){
+    this.counter++ ;
+  }
+  decrement(){
+    this.counter-- ;
+  }
+  switchVisibility(){
+    this.isVisible = !this.isVisible ;
+  }
+}
+
+
+child.component.html
+--------------------
+<h1>{{myNumber}}</h1>
+
+
+
+child.component.ts
+-------------------
+import { Component, OnInit,Input,OnChanges, SimpleChange, SimpleChanges,DoCheck } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.css']
+})
+export class ChildComponent implements OnInit,OnChanges,DoCheck {
+@Input() myNumber;
+  constructor() { }
+
+  ngOnChanges(changes: SimpleChanges){
+    const newNumberChange:SimpleChange = changes.myNumber ;
+    console.log("ngOnChanges() -> previous value: ",newNumberChange.previousValue);
+    console.log("ngOnChanges() -> current value: ",newNumberChange.currentValue);
+  }
+
+  ngOnInit(){
+    console.log("ngOnInit() -> value: ",this.myNumber);
+  }
+  ngDoCheck(){
+    console.log("ngDoCheck() -> value:",this.myNumber);
+  }
+  ngOnDestroy(){
+    console.log("component has been destroyed");
+  }
+
+}
+
+============================================================
+
+2.component interaction
+-------------------
+
+child.component.ts
+
+import { Component, OnInit ,Input,Output,EventEmitter} from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.css']
+})
+export class ChildComponent implements OnInit {
+  @Input() public fromParent;
+  @Output() public childinfo= new EventEmitter();
+  fireEvent(){
+    this.childinfo.emit(" this is from child");
+  }
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+   
+
+child.component.html
+
+<h1>{{fromParent}}<h1>
+<button class="btn btn-success" (click)="fireEvent()">click me</button>
+
+app.component.ts
+
+import { Component,OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  public parentMsg ="This is from parent";
+  ngOnInit(){
+
+  }
+}
+
+
+app.component.html
+
+<h1>Component</h1>
+
+    
+<app-child (childinfo)="msg=$event" [fromParent]="parentMsg"></app-child>
+
+<h2>{{msg}}</h2>
+
+
+==================================================================================
+3.dynamic component
+
+app.component.ts
+
+
+import { Component,OnInit } from '@angular/core';
+import { GoodbyeComponent } from './dynamic/goodbye/goodbye.component';
+import { HelloComponent } from './dynamic/hello/hello.component';
+import { HiComponent } from './dynamic/hi/hi.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+   say:any;
+
+  ngOnInit(){
+    this.say= HiComponent;
+  }
+  sayHi(){
+    this.say=HiComponent;
+  }
+  sayHello(){
+    this.say= HelloComponent;
+  }
+  sayGoodBye(){
+    this.say= GoodbyeComponent;
+  }
+}
+
+
+app.component.html
+
+<div>
+  <h1 class="text-center text-danger mt-5">Dynamic Components</h1>
+  <ng-container *ngComponentOutlet= "say"></ng-container>
+  <button class="btn btn-primary " (click)="sayHi()">say hi</button>&nbsp;
+  <button class="btn btn-danger " (click)="sayHello()">say hello</button>&nbsp;
+  <button class="btn btn-success " (click)="sayGoodBye()">say goodbye</button>
+  
+</div>
+    
+===========================================================================================
+4.Interpolatin and property binding
+
+app.component.html
+
+<div>
+  <h1 class="text-center text-danger">Angular Demo</h1>
+
+    <!-----Interpolation-->
+    <div class="container p-3">
+      <h2 class=" text-success ">Text interpolation binding</h2>
+      <table class="table table-hover mt-3" border="1">
+        <tr>
+          <th>Product Name</th>
+          <th>Product Price</th>
+          <th>Product Details</th>
+        </tr>
+        <tr>
+          <td>{{product.name}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.details}}</td>
+        </tr>
+        <tr>
+          <td>{{product.name}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.details}}</td>
+        </tr>
+        <tr>
+          <td>{{product.name}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.details}}</td>
+        </tr>
+      </table>
+
+      <!--------Property binding-->
+      <h2 class="text-secondry text-center mt-5">Property Binding</h2>
+      <h3>{{5+5}}</h3>
+      <dl >
+        <dt>productname</dt>
+        <dd [innerHTML]="product.name"></dd>
+        <dt>product Price</dt>
+        <dd [innerHTML]="product.price"></dd>
+      </dl>
+
+      <!---diff between interpolation and property binding-->
+      <h2 class=" text-primary text-center mt-5 mb-5">Difference Between Property Binding and interpolation</h2>
+      <input type="text" [disabled]="disabledBox" [value]="name">
+      <br><br>
+      <input type="text" disabled="{{disabledBox}}" value="{{name}}">
+      <br><br>
+      <button (click)="enableBox()">enableBox</button>
+
+
+    <!---Angular Pipes-->
+    <h2 class=" text-danger text-center mb-5">Angular Pipes</h2>
+    <h3>LowerCase Pipe</h3>
+    <p> {{"lowercase  :" + username | lowercase}}</p>
+    <h3>UpperCase Pipe</h3>
+    <p>{{username | uppercase}}</p>
+    <h3>Title Case Pipe</h3>
+    <p>{{ title | titlecase}}</p>
+    <h3>Date Pipe</h3>
+    <p>{{mfd | date :'dd-mm-yyyy'}}</p>
+    <p>{{mfd | date :'long'}}</p>
+    <p>{{mfd | date :'medium'}}</p>
+    <p>{{mfd | date :'full'}}</p>
+    <h3>Currency Pipe</h3>
+    <p>{{ amount | currency :'INR'}}</p>
+    <h3>Json Pipe:</h3>
+    
+     <p>
+      {{product | json }}
+     </p> 
+     <h3>Number Pipe</h3>
+     <p>{{amount | number:'5.2'}}</p>
+    
+</div>
+</div>
+
+
+app.component.ts
+
+import { Component,OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+public product ={name:"samsung Mobile",
+                price:1500, 
+                details:"available"};
+                
+public name="David";
+public disabledBox =true;
+title = "welcome to angular";
+public mfd = new Date();
+public amount = 24000 ;
+
+public username = "John ";
+  ngOnInit(){
+    
+  }
+  enableBox(){
+  this.disabledBox=false;
+ }
+}
+
+
+app.component.css
+th,td{
+    border: 1px solid black;
+    padding: 10px;
+}
+h2{
+    font-size: 30px;
+    font-style: italic;
+}
+div{
+    background-color: whitesmoke;
+    padding: 20px;
+}
+.text-secondry{
+    color: orangered;
+}
+
+
+=================================================================
+2.Directives
+
+.html file
+
+<div class="container-fluid">
+  <h2 class="text-center text-danger">Angular Directives</h2>
+  <p>Angular Directives are classified into three groups</p>
+  <ol>
+    <li>Component Directives</li>
+    <li>Structural Directives</li>
+    <li>Attribute Directives</li>
+  </ol>
+  <h2 class="text-danger">Examples Of Structural Directive by using ngIf</h2>
+  <div class="row m-2 p-3" style="border: 2px dotted black;">
+    <div class="col-3">
+       <dl>
+           <dt>Name</dt>
+           <dd>{{product.Name}}</dd>
+           <dt>Price</dt>
+           <dd>{{product.Price}}</dd>
+       </dl>
+       <button (click)="TogglePreview()" class="btn btn-primary btn-sm"> {{btnText}} Preview </button>
+    </div>
+    <div class="col-9">
+         <div *ngIf="showImage">
+             <img [src]="product.Photo" width="200" height="200" class="img-thumbnail">
+         </div>
+         
+    </div>
+  </div>
+  <p class="text-center text-primary">syntax: with then and else</p>
+    <pre>
+      if condition then 
+        statement
+       else
+         statement
+    </pre>
+  <h1 class="text-center text-danger">Example of then and else</h1>
+    <h1 *ngIf="status; then trueBlock else elseBlock "></h1>
+    <ng-template #elseBlock>
+      <h1>This is False Part</h1>
+    </ng-template>
+    
+    <ng-template #trueBlock >
+      <h1>This Is True Part</h1>
+    </ng-template>
+    
+ </div>
+ 
+
+.ts file
+
+
+import { Component,OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+public product = { Name : "samsung mobile", Price: 20000, Photo : "assets/mobile1.jpg"};
+public showImage = false;
+  public btnText = 'Show';
+  public status = true ;
+  public TogglePreview() {
+     this.showImage = (this.showImage==false) ? true : false;
+     this.btnText = (this.btnText=='Show') ? 'Hide' : 'Show';
+  }
+
+
+
+  ngOnInit(){
+    
+  }
+ 
+  
+
+}
+=============================================================================
+
+
+ngSwitch
+ 
+app.component.ts
+
+import { Component,OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+    // ngfor
+  public courses = ["html", "javascript","bootstrap","angualr","typescript"]; 
+  public data = [
+    {Category: 'Electronics', Products: ['Samsung Tv', 'mobile']},
+    {Category: 'Footwear', Products: ['Nike casuals', 'Lee cooper Boot']}
+  ];
+
+   // ngclass binding logic
+  public styles = [];
+  public flagBackground = false;
+  public flagText = false;
+  public flagBorder = false;
+  
+  public product = {                      
+    Name: 'Nike Casuals',
+    Price: 5600.55,
+    Description: 'something more about this product..',
+    Mfd: new Date(),
+    Photo: 'assets/mobile.jpg'
+  };
+  public selectedView = 'info';
+  public ViewSelected(eventObj){
+     this.selectedView = eventObj.target.name;
+  }
+
+
+
+  ngOnInit(){
+    
+  }
+ 
+  
+
+}
+
+
+.html
+<div class="container-fluid">
+  <h2>Product Details</h2>
+  <div class="btn-toolbar bg-danger">
+    <div class="btn-group">
+        <button (click)="ViewSelected($event)" name="info" class="btn btn-danger">Product Info</button>
+        <button (click)="ViewSelected($event)" name="preview" class="btn btn-danger">Product Preview</button>
+        <button (click)="ViewSelected($event)" name="details" class="btn btn-danger">More Details</button>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 50px; margin-left: 50px;">
+    <div [ngSwitch]="selectedView">
+        <!--Info Card-->
+        <div class="card" *ngSwitchCase="'info'" >
+            <div class="card-header">
+                <h3 class="card-title">{{product.Name}}</h3>
+            </div>
+            <div class="card-body">
+                <dl>
+                    <dt>Price</dt>
+                    <dd>{{product.Price}}</dd>
+                    <dt>Manufactured</dt>
+                    <dd>{{product.Mfd.toDateString()}}</dd>
+                </dl>
+            </div>
+        </div>
+        <!--Preview Card-->
+        <div class="card" *ngSwitchCase="'preview'">
+            <div class="card-body">
+                <img [src]="product.Photo" width="200" height="200">
+            </div>
+        </div>
+        <!--Summary Card-->
+        <div class="card" *ngSwitchCase="'details'">
+            <div class="card-body">
+                <p>{{product.Description}}</p>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+</div>
+<div class="container mt-5">
+  <h2 class="text-center text-primary">Iterator ngFor</h2>
+ <div class="row">
+   <div class="col-md-4">
+    <ol>
+      <li *ngFor="let course of courses">{{course}}</li>
+    </ol>
+   </div>
+   <div class="col-md-4">
+    <ol>
+      <li *ngFor="let item of data">
+      {{item.Category}}
+      <ul>
+      <li *ngFor="let product of item.Products">
+      {{product}}
+      </li>
+      </ul>
+      </li>
+      </ol>
+   </div>
+   <div class="col-md-4">
+    <select class="form-control">
+      <optgroup *ngFor="let item of data" label="{{item.Category}}">
+      <option *ngFor="let product of item.Products">
+      {{product}}
+      </option>
+      </optgroup>
+      </select>
+   </div>
+ </div>
+</div>
+<div style="border: 2px dotted black; margin: 20px; padding: 20px;">
+  <div class="container-fluid">
+    <h2 [ngClass]="'effects'">Angular Class Binding</h2>
+  </div>
+</div>
+<div style="border: 2px solid rgb(199, 35, 35); margin: 20px; padding: 20px;">
+  <h2>Class Binding Array Reference</h2>
+  <div class="form-group">
+    <input [(ngModel)]="styles" type="text" placeholder="eg: bgEffects, txtEffects, borderEffects" class="form-control">
+  </div>
+  <h2 [ngClass]="styles">Angular Class Binding</h2>
+</div>
+<div  style="border: 2px dotted rgb(226, 219, 231); margin: 20px; padding: 20px;">
+  <h2>Class Binding Object reference</h2>
+  <ul class="list-unstyled">
+    <li><input [(ngModel)]="flagBackground" type="checkbox">Background Effects</li>
+    <li><input [(ngModel)]="flagText" type="checkbox">Text Effects</li>
+    <li><input [(ngModel)]="flagBorder" type="checkbox">Border Effects</li>
+  </ul>
+  <h2 [ngClass]="{bgEffects:flagBackground, txtEffects:flagText, 'border-Effects':flagBorder}">Angular Class Binding</h2>
+</div>
+
+.css
+
+.effects {
+    background-color: darkcyan;
+    color: white;
+    text-align: center;
+}
+.bgEffects {
+    background-color: darkcyan;
+}
+.txtEffects {
+    color:white;
+    text-align: center;
+}
+.borderEffects {
+    border:2px solid darkcyan;
+    box-shadow: 2px 2px 3px darkcyan;
+}
+
+.border-Effects {
+    border:2px solid darkcyan;
+    box-shadow: 2px 2px 3px darkcyan;
+}
+
+==============================================
+services
+
+student.service.ts
+
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { studentInterface } from './student';
+import { catchError } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StudentService {
+  private url = "../assets/data/student.json" ;
+  constructor(private http : HttpClient) { }
+  getStudents():Observable<studentInterface[]>{
+    return this.http.get<studentInterface[]>
+    (this.url)
+    .pipe(catchError(this.errorHandler));
+  }
+  errorHandler(error: HttpErrorResponse){
+    return throwError(error.message ||
+      "Unknown Server Error")
+  }
+}
+
+student-details.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { StudentService } from 'src/app/student.service';
+
+@Component({
+  selector: 'app-student-list',
+  templateUrl: './student-list.component.html',
+  styleUrls: ['./student-list.component.css']
+})
+export class StudentListComponent implements OnInit {
+public students =[];
+public errMsg ;
+  constructor(private service : StudentService) { }
+
+  ngOnInit() {
+    this.service.getStudents()
+    .subscribe(data => this.students=data,
+              error => this.errMsg = error);
+  }
+
+}
+
+
+student-details.component.html
+
+<div class="container">
+    <h2 class="text-primary">StudentDetails Component</h2>
+    <h2>{{errMsg}}</h2>
+<table class="table table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Location</th>
+    </tr>
+    <tr *ngFor ="let item of students">
+        <td>{{item.Name}}</td>
+        <td>{{item.Course}}</td>
+        <td>{{item.Location}}</td>
+    </tr>
+</table>
+
+</div>
+=====================================================================
+Routing 
+
+generate below components
+-home
+-electronic
+-fashions
+-footwear
+-search
+
+app-routing.modules.ts
+
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { HomeComponent } from './categories/home/home.component';
+import { FashionsComponent } from './categories/fashions/fashions.component'
+import { ElectronicComponent } from './categories/electronic/electronic.component';
+import { FootwearComponent } from './categories/footwear/footwear.component';
+import { PagenotfoundComponent } from './categories/pagenotfound/pagenotfound.component';
+import { SearchComponent } from './categories/search/search.component';
+
+const routes: Routes = [
+  {path : 'home', component : HomeComponent},
+  {path : 'fashions', component :FashionsComponent},
+  {path : 'electronics', component:ElectronicComponent},
+  {path : 'footwears', component: FootwearComponent},
+  {path : 'search/:id/:name/:price', component: SearchComponent},
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {path : '**',component: PagenotfoundComponent}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+search.component.html
+
+<div>
+    <dl>
+        <dt>Id</dt>
+        <dd>{{id}}</dd>
+        <dt>Name</dt>
+        <dd>{{name}}</dd>
+        <dt>Price</dt>
+        <dd>{{price}}</dd>
+    </dl>
+</div>
+
+search.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { throwError } from 'rxjs';
+
+@Component({
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
+})
+export class SearchComponent implements OnInit {
+public id ;
+public name ;
+public price ;
+  constructor(private route : ActivatedRoute) { }
+
+  ngOnInit() {
+    this.id=this.route.snapshot.paramMap.get('id');
+    this.name = this.route.snapshot.paramMap.get('name');
+    this.price = this.route.snapshot.paramMap.get('price');
+
+  }
+
+}
+
+
+
+https://m.media-amazon.com/images/I/61FuWeCuGCL._SX3000_.jpg
+
+https://rukminim1.flixcart.com/flap/50/50/image/2fbbcb5fac297bdb.jpg?q=50
+
+https://rukminim1.flixcart.com/flap/844/140/image/894a7783e74700e4.jpg?q=50
+
+
+
+
+
+home.component.html
+
+<div class="container-fluid mt-3" >
+    <div class="row">
+        <div class="col-md">
+           <marquee scrollamount="15">
+               <h2 class="text-center text-danger">Best Deals Of the Day</h2>
+             </marquee>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <img src="./assets/slide.png" class="img-fluid">
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/6/f9e56002-a32e-4a59-a2d1-496d478f25951638731261046-DSK-BUY1-699.jpg   ">
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md">
+            <h2 class="text-center ">UNBELIEAVBLE DEALS</h2>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-3">     
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-3">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/def31b3f-1c19-460f-8098-ae6166268ebe1638272920148-Roadster-_TT.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/def31b3f-1c19-460f-8098-ae6166268ebe1638272920148-Roadster-_TT.jpg" class="img-fluid">
+           </div>
+           <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/2ee898c2-4c01-44d3-a6af-ffb60ecde2da1638272661324-Libas-_Indo_Era.jpg" class="img-fluid">
+           </div>
+        </div>
+        <h2 class="text-center m-5">Best Of Brands</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+            </div>
+           <div class="col-md-3">
+               <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/4792ff72-20d7-4538-9279-acba8f42e6401638425622974-highlander.jpg">
+           </div>
+           <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/24163dc4-41ca-4be2-aca6-a24254632a2e1638425622955-allen-solly.jpg" class="img-fluid">
+           </div>
+           <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+           </div>   
+        </div>
+    </div>
+
+ </div>
+ <div class="container-fluid">
+    <h2 class="text-center">Today mens Brand Best Deals& Best Offers</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/4792ff72-20d7-4538-9279-acba8f42e6401638425622974-highlander.jpg">
+        </div>
+        <div class="col-md-3">
+            <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/24163dc4-41ca-4be2-aca6-a24254632a2e1638425622955-allen-solly.jpg" class="img-fluid">
+        </div>
+        <div class="col-md-3">
+         <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/4792ff72-20d7-4538-9279-acba8f42e6401638425622974-highlander.jpg">
+     </div>
+     <div class="col-md-3">
+         <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/24163dc4-41ca-4be2-aca6-a24254632a2e1638425622955-allen-solly.jpg" class="img-fluid">
+     </div>
+     </div>
+     <div class="row mt-5">
+         <div class="col-md">
+             <p><span class="text-danger"><b>Trendy men’s clothing</b></span> - Online shopping for women at Myntra is a mood-elevating experience. Look hip and stay comfortable with chinos and printed shorts this summer. Look hot on your date dressed in a little black dress, or opt for red dresses for a sassy vibe. Striped dresses and T-shirts represent the classic spirit of nautical fashion. Choose your favourites from among Bardot, off-shoulder, shirt-style, blouson, embroidered and peplum tops, to name a few. Team them up with skinny-fit jeans, skirts or palazzos. Kurtis and jeans make the perfect fusion-wear combination for the cool urbanite. Our grand sarees and lehenga-choli selections are perfect to make an impression at big social events such as weddings. Our salwar-kameez sets, kurtas and Patiala suits make comfortable options for regular wear.
+             </p>
+         </div>
+     </div>
+
+</div>
+
+men.html
+
+<div class="container-fluid">
+    <h2 class="text-center">Today mens Brand Best Deals& Best Offers</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/4792ff72-20d7-4538-9279-acba8f42e6401638425622974-highlander.jpg">
+        </div>
+        <div class="col-md-3">
+            <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/24163dc4-41ca-4be2-aca6-a24254632a2e1638425622955-allen-solly.jpg" class="img-fluid">
+        </div>
+        <div class="col-md-3">
+         <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/4792ff72-20d7-4538-9279-acba8f42e6401638425622974-highlander.jpg">
+     </div>
+     <div class="col-md-3">
+         <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/24163dc4-41ca-4be2-aca6-a24254632a2e1638425622955-allen-solly.jpg" class="img-fluid">
+     </div>
+     </div>
+     <div class="row mt-5">
+         <div class="col-md">
+             <p><span class="text-danger"><b>Trendy men’s clothing</b></span> - Online shopping for women at Myntra is a mood-elevating experience. Look hip and stay comfortable with chinos and printed shorts this summer. Look hot on your date dressed in a little black dress, or opt for red dresses for a sassy vibe. Striped dresses and T-shirts represent the classic spirit of nautical fashion. Choose your favourites from among Bardot, off-shoulder, shirt-style, blouson, embroidered and peplum tops, to name a few. Team them up with skinny-fit jeans, skirts or palazzos. Kurtis and jeans make the perfect fusion-wear combination for the cool urbanite. Our grand sarees and lehenga-choli selections are perfect to make an impression at big social events such as weddings. Our salwar-kameez sets, kurtas and Patiala suits make comfortable options for regular wear.
+             </p>
+         </div>
+     </div>
+
+</div>
+
+
+women.html
+
+<div class="container-fluid">
+    <h2 class="text-center m-5">Today Womens Brand Best Deals& Best Offers</h2>
+    <div class="row ">
+        <div class="col-md-3">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+        </div>
+       <div class="col-md-3">
+           <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+       </div>
+       <div class="col-md-3">
+        <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+    </div>
+    <div class="col-md-3">
+       <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+    </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md">
+            <p><span class="text-danger"><b>Trendy women’s clothing</b></span> - Online shopping for women at Myntra is a mood-elevating experience. Look hip and stay comfortable with chinos and printed shorts this summer. Look hot on your date dressed in a little black dress, or opt for red dresses for a sassy vibe. Striped dresses and T-shirts represent the classic spirit of nautical fashion. Choose your favourites from among Bardot, off-shoulder, shirt-style, blouson, embroidered and peplum tops, to name a few. Team them up with skinny-fit jeans, skirts or palazzos. Kurtis and jeans make the perfect fusion-wear combination for the cool urbanite. Our grand sarees and lehenga-choli selections are perfect to make an impression at big social events such as weddings. Our salwar-kameez sets, kurtas and Patiala suits make comfortable options for regular wear.
+            </p>
+        </div>
+    </div>
+    
+</div>
+
+
+
+navbar.html
+
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img class="img-fluid" src="https://indiantelevision.com/sites/default/files/styles/smartcrop_800x800/public/images/tv-images/2019/10/07/myntra.jpg?itok=ng71w_dG" width="50"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav  mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" routerLink="men" href="#">Men Fashions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" routerLink="women">Women Fashions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" routerLink="kid">Kids Fashions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" routerLink="beauty">Beauty</a>
+          </li>
+          
+        </ul>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Search" >
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <ul  class="navbar-nav  mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Today Deals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Best Offers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Gift Cards</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="row">
+    <div class="col">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+nav.html
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <nav class="navbar navbar-expand-md navbar-light bg-light">
+                <div class="container-fluid">
+                  <a class="navbar-brand" href="#"><img class="img-fluid" src="https://indiantelevision.com/sites/default/files/styles/smartcrop_800x800/public/images/tv-images/2019/10/07/myntra.jpg?itok=ng71w_dG" width="50"></a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav  mb-2 mb-lg-0">
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">HOME</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link " aria-current="page"  href="#men">Men Fashions</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#women" >Women Fashions</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#" >Kids Fashions</a>
+                      </li>
+                    </ul>
+                    <form class="d-flex">
+                      <input class="form-control me-2" type="search" placeholder="Search" >
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <ul  class="navbar-nav  mb-2 mb-lg-0">
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Today Deals</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Best Offers</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Gift Cards</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" routerLink="login">Login</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <marquee scrollamount="15">
+                <h2 class="text-danger">Best Deals Of The Day</h2>
+            </marquee>
+            
+            <img class="img-fluid" src="assets/slide.png">
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <h2 class="text-center">UNBELIEAVBLE DEALS</h2>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/afbb93cb-9b3a-474c-bdff-a44812fa12791638272661278-HRX-_Puma.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/afbb93cb-9b3a-474c-bdff-a44812fa12791638272661278-HRX-_Puma.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            
+        </div>
+    </div>
+    <div class="row mt-5" id="women">
+        <div class="col">
+            <h3 class="text-center text-primary">Shop By Category</h3>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+            </div>
+           <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+           </div>
+           <div class="col-md-3">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+        </div>
+        <div class="col-md-3">
+           <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+            </div>
+           <div class="col-md-3">
+               <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+           </div>
+           <div class="col-md-3">
+            <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/1/0a3c657d-bc26-467e-9ca3-6036fd17a9a81638336399517-Libas_HP-Top.jpg">
+        </div>
+        <div class="col-md-3">
+           <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/12/2/885617e2-5f27-4b26-9a51-31099007d1e71638420637559-Lakme-MakeUp_HP-Tile_Dec-3.jpg" class="img-fluid">
+        </div>
+        </div>
+    </div>
+    <div class="row mt-5" id="men">
+        <div class="col">
+            <h3 class="text-center">MUST-HAVE STYLES</h3>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/afbb93cb-9b3a-474c-bdff-a44812fa12791638272661278-HRX-_Puma.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/30/afbb93cb-9b3a-474c-bdff-a44812fa12791638272661278-HRX-_Puma.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img class="img-fluid" src="https://assets.myntassets.com/f_webp,w_82,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/29/044fdc92-3c2a-4646-af5f-4009e87a0a741638200558444-puma.jpg">
+            </div>
+            
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/5e524cd6-c3c8-4243-8b6e-81ac56ddb0571638088112630-Jackets_2.jpg" class="img-fluid">
+            </div>
+
+      
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/5e524cd6-c3c8-4243-8b6e-81ac56ddb0571638088112630-Jackets_2.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/e336f4ae-dd13-4f16-a956-e9dac760c8cd1638087977634-Casual-Shirts_2.jpg" class="img-fluid">
+            </div>
+        
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/5e524cd6-c3c8-4243-8b6e-81ac56ddb0571638088112630-Jackets_2.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/5e524cd6-c3c8-4243-8b6e-81ac56ddb0571638088112630-Jackets_2.jpg" class="img-fluid">
+            </div>
+            
+            <div class="col-md-2">
+                <img src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2021/11/28/e336f4ae-dd13-4f16-a956-e9dac760c8cd1638087977634-Casual-Shirts_2.jpg" class="img-fluid">
+            </div>
+        </div>
+        
+    </div>
+    
+</div>
+
+
+addingCart
+===============================
+
+<div class="container mt-5">
+    <div class="row" *ngIf="visible">
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>{{product.name}}</h2><br><br>                       
+                        <img [src]="product.img" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button name="fashion" class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>Jeans Fashions</h2><br><br>                       
+                        <img src="../assets/jeans.jpg" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>mens Fashions</h2><br><br>                       
+                        <img src="assets/shirt.jpg" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row" *ngIf="visible">
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>Kids Fashions</h2><br><br>                       
+                        <img src="https://tse4.mm.bing.net/th?id=OIP.PJ06Nx_sMw9RqhSnmWSWowHaJC&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button name="fashion" class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>kids Fashion</h2><br><br>                       
+                        <img src="https://tse2.mm.bing.net/th?id=OIP.VLej323tUViDbV4fyh_ZKgHaKL&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>kids Fashions</h2><br><br>                       
+                        <img src="https://tse4.mm.bing.net/th?id=OIP.BwGXNdH6bld8c-jSmVcINQHaKL&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row" *ngIf="visible">
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>Kids Fashions</h2><br><br>                       
+                        <img src="https://tse4.mm.bing.net/th?id=OIP.PJ06Nx_sMw9RqhSnmWSWowHaJC&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button name="fashion" class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>kids Fashion</h2><br><br>                       
+                        <img src="https://tse2.mm.bing.net/th?id=OIP.VLej323tUViDbV4fyh_ZKgHaKL&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="card-deck " *ngFor="let product of products">
+                <div class="card" >                 
+                    <div class="card-body">
+                        <h2>kids Fashions</h2><br><br>                       
+                        <img src="https://tse4.mm.bing.net/th?id=OIP.BwGXNdH6bld8c-jSmVcINQHaKL&pid=Api&P=0&w=300&h=300" class="img-fluid"><br><br>
+                        <button class="btn btn-danger" (click)="inc(product)">+</button>&nbsp;
+                        <span>{{product.qty}}</span>&nbsp;
+                        <button class="btn btn-danger" (click)="dec(product)">-</button><br><br>
+                        <button class="btn btn-danger">Add to cart</button>                      
+                    </div>
+                </div><br><br>
+            </div>
+        </div>
+    </div>
+</div>
+==============================================================
+
+productList.html
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <app-productsfilter [AllCount]="products.length" [FootwearCount]="FootwearCount" [MenFashionsCount]="MenFashionsCount" [KidsFashionsCount]="KidsFashionsCount" (EmitCategoryName)="onFilterCategoryChanged($event)"></app-productsfilter>
+        </div>
+        <div class="col-md-10 text-center" >
+           <div>
+            <ng-container *ngFor="let item of products">
+                <div class="card" *ngIf="selectedCategoryValue=='All' || selectedCategoryValue == item.Category">
+                    <div class="card-header">
+                        <h3 class="card-title">{{item.Name}}</h3>
+                    </div>
+                    <div class="card-body">
+                        <img class="img-fluid" [src]="item.Photo">
+                    </div>
+                    <div class="card-footer">
+                        <h3 class="sub-title">{{item.Price}}</h3>
+                    </div>
+                </div>
+               </ng-container>
+           </div>
+        </div>
+    </div>
+</div>
+
+productlist.ts
+
+=====================
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-products-list',
+  templateUrl: './products-list.component.html',
+  styleUrls: ['./products-list.component.css']
+})
+export class ProductsListComponent {
+public products = [
+  {Name: 'Shirt', Price: 2600.55, Photo: 'assets/shirt.jpg', Category: 'MenFashions'},
+  {Name: 'Jeans', Price: 2000.55, Photo: 'assets/jeans.jpg', Category: 'MenFashions'},
+  {Name: 'Nike Casuals', Price: 9000.55, Photo: 'assets/shoe.jpg', Category: 'Footwear'},
+  {Name: 'Lee Cooper Boot', Price: 3000.55, Photo: 'assets/shoe1.jpg', Category: 'Footwear'},
+  {Name: 'Shirt', Price: 1600.55, Photo: 'assets/kid1.jpg', Category: 'KidsFashions'},
+  {Name: 'Shirt', Price: 2200.55, Photo: 'assets/kid1.jpg', Category: 'KidsFashions'}
+];
+public FootwearCount = this.products.filter(x=>x.Category=='Footwear').length;
+public MenFashionsCount = this.products.filter(x=>x.Category=='MenFashions').length;
+public KidsFashionsCount = this.products.filter(x=>x.Category=='KidsFashions').length;
+public selectedCategoryValue = 'All';
+ public onFilterCategoryChanged(selectedCategoryName:any) {
+    this.selectedCategoryValue = selectedCategoryName;
+ }
+ 
+
+}
+==============
+productfilter.html
+<div class="conatiner-fluid">
+    <div class="row">
+        <div class="col">
+            <div>
+                <label>Choose Category</label>
+                <div>
+                    <select (change)="OnCategoryChanged()" [(ngModel)]="selectedCategoryName" class="form-control">
+                        <option>All[{{AllCount}}]</option>
+                        <option>Footwear[{{FootwearCount}}]</option>
+                        <option>MenFashions[{{MenFashionsCount}}]</option>
+                        <option>KidsFashions[{{KidsFashionsCount}}]</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+===========================================
+productfilter.ts
+import { Component,Input, Output,EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-productsfilter',
+  templateUrl: './productsfilter.component.html',
+  styleUrls: ['./productsfilter.component.css']
+})
+export class ProductsfilterComponent  {
+  public selectedCategoryName = 'All';
+  @Input() public AllCount = 0;
+  @Input() public FootwearCount = 0;
+  @Input() public MenFashionsCount = 0;
+  @Input() public KidsFashionsCount = 0;
+  @Output() public EmitCategoryName: EventEmitter<string> = new EventEmitter<string>();
+  public OnCategoryChanged(){
+    this.EmitCategoryName.emit(this.selectedCategoryName);
+  }
+  
+
+}
+
+-----------------------------------------------------
+
+Productlist.html
+
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+          <app-productsfilter [AllCount]="products.length" [KidFashionsCount]="KidFashionsCount" [FootwearCount]="FootwearCount" [FashionCount]="FashionCount" (EmitCategoryName)="onFilterCategoryChanged($event)"></app-productsfilter>
+      </div>
+      <div class="col-md-10" >
+        <ng-container *ngFor="let item of products">
+            <div class="card" *ngIf="selectedCategoryValue=='All' || selectedCategoryValue == item.Category" >
+                <div class="card-header">
+                 <h3 class="card-title">{{item.Name}}</h3>
+                </div>
+                <div class="card-body text-center">
+                 <img [src]="item.Photo" width="100" height="100">
+                </div>
+                <div class="card-footer">
+                 <h3 class="card-subtitle">{{item.Price}}</h3>
+                </div>
+               </div>
+               
+        </ng-container>
+    </div>
+  </div>
+  
+.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-products-list',
+  templateUrl: './products-list.component.html',
+  styleUrls: ['./products-list.component.css']
+})
+export class ProductsListComponent {
+
+  public products = [
+    {Name: 'T-shirts', Price: 45000.55, Photo: 'assets/kid1.jpg', Category: 'KidFashions'},
+    {Name: 'Kids', Price: 4000.55, Photo: 'assets/kid3.jpg', Category: 'KidFashions'},
+    {Name: 'Nike ', Price: 9000.55, Photo: 'assets/shoe.jpg', Category: 'Footwear'},
+    {Name: 'Sparks ', Price: 3000.55, Photo: 'assets/shoe1.jpg', Category: 'Footwear'},
+    {Name: 'Shirt', Price: 2600.55, Photo: 'assets/shirt.jpg', Category: 'Fashion'},
+    {Name: 'Jeans', Price: 2000.55, Photo: 'assets/jeans.jpg', Category: 'Fashion'}
+  ];
+  public KidFashionsCount = this.products.filter(x=>x.Category=='KidFashions').length;
+  public FootwearCount = this.products.filter(x=>x.Category=='Footwear').length;
+  public FashionCount = this.products.filter(x=>x.Category=='Fashion').length;
+  public selectedCategoryValue = 'All';
+  public onFilterCategoryChanged(selectedCategoryName:any) {
+     this.selectedCategoryValue = selectedCategoryName;
+  }
+ }
+
+
+productfilter.html
+
+<div>
+    <div class="row">
+        <div class="col-md">
+            <h2>Filter Products</h2>
+        <div>
+        <label>Choose Category</label>
+        <div>
+            <select (change)="OnCategoryChanged()" [(ngModel)]="selectedCategoryName" class="form-control">
+               <option value="All">All [{{AllCount}}]</option>
+               <option value="KidFashions">kidsFashions [{{KidFashionsCount}}] </option>
+               <option value="Footwear">Footwear [{{FootwearCount}}]</option>
+               <option value="Fashion">Men Fashion [{{FashionCount}}]</option>
+            </select>
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+.ts
+
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-productsfilter',
+  templateUrl: './productsfilter.component.html',
+  styleUrls: ['./productsfilter.component.css']
+})
+export class ProductsfilterComponent {
+  public selectedCategoryName = 'All';
+
+  @Input() public AllCount = 0;
+  @Input() public KidFashionsCount = 0;
+  @Input() public FootwearCount = 0;
+  @Input() public FashionCount = 0;
+  @Output() public EmitCategoryName: EventEmitter<string> = new EventEmitter<string>();
+  public OnCategoryChanged() {
+    this.EmitCategoryName.emit(this.selectedCategoryName);
+  }
+}
+
+==============================================
+
+twowaybinding
+
+Setting up Bootstrap CSS for Angular Project:
+1. Install Bootstrap in your workspace
+
+      C:\work-space> npm install bootstrap
+
+2.  Goto the following location
+	   projects
+	   |_amazon
+	      |_src
+	         |_styles.css
+
+3.  Import bootstrap css
+
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
+
+	../   → exit current folder and goto pervious level
+	./    → Access from current folder
+
+
+
+
+
+Two Way Data Binding
+- In Two way binding Model is "Single-Source-Of-Truth".
+- Model contains data tracked "onChange" and contains information about previous value and current value.
+- It uses component "ngOnChange" event to identify the changes and update the changes.
+- Two way binding in Angular is managed by using "NgModel" directive.
+- NgModel uses property and event binding technique
+	             	[ ]	→ Property Binding
+	 	( )	→ Event Binding
+	
+	[(ngModel)]="ReferenceName"
+
+- NgModel is a member of "FormsModule"  in "@angular/forms" library.
+
+
+Ex:
+1. Go to "app.module.ts"
+
+import { FormsModule } from '@angular/forms';
+
+ imports: [
+    BrowserModule,
+    FormsModule
+  ],
+
+2. Add a new component
+	app> ng g c  twowaybinding --skipTests=true
+
+3. twowaybinding.component.ts
+
+export class TwowaybindingComponent {
+  public Name = 'Samsung TV';
+  public Price = 34000.44;
+  public ShippedTo = 'Hyderabad';
+  public InStock = true;
+}
+
+4. twowaybinding.component.html
+
+<div class="container-fluid">
+  <h2 class="text-center text-primary">Register Product</h2>
+  <div class="row">
+    <div class="col-3">
+       <div class="form-group">
+        <label>Name</label>
+        <div>
+            <input type="text" class="form-control" [(ngModel)]="Name">
+        </div>
+       </div>
+       <div class="form-group">
+         <label>Price</label>
+         <div>
+             <input type="text" class="form-control" [(ngModel)]="Price" >
+         </div>
+       </div>
+       <div class="form-group">
+         <label>Shipped To</label>
+         <div>
+             <select class="form-control" [(ngModel)]="ShippedTo">
+              <option>Delhi</option>
+              <option>Hyderabad</option>
+             </select>
+         </div>
+       </div>
+       <div class="form-group">
+         <label>In Stock</label>
+         <div>
+             <input type="checkbox" [(ngModel)]="InStock"> Yes
+         </div>
+       </div>
+    </div>
+    <div class="col-9">
+        <table class="table table-hover">
+            <colgroup span="1" style="background-color: lightcyan; font-weight: bold;"></colgroup>
+           <tr>
+               <td>Name</td>
+               <td>{{Name}}</td>
+           </tr>
+           <tr>
+               <td>Price</td>
+               <td>{{Price}}</td>
+           </tr>
+           <tr>
+               <td>Shippied To</td>
+               <td>{{ShippedTo}}</td>
+           </tr>
+           <tr>
+               <td>Stock</td>
+               <td>{{(InStock==true)?"Available":"Out of Stock"}}</td>
+           </tr>
+        </table>
+    </div>
+  </div>
+</div>
+
+5. twowaybinding.component.css
+
+.col-3 {
+    border-right: 2px dotted darkcyan;
+}
+
+
+Ex: Controller Logic for Updating Model Data
+
+1. ".ts" file
+
+export class TwowaybindingComponent {
+  public Name = '';
+  public Price = 0.0;
+  public ShippedTo = '';
+  public InStock = false;
+  public product = {
+    Name: '',
+    Price: 0,
+    ShippedTo: '',
+    InStock: false
+  };
+  public RegisterClick(){
+     this.product = {
+       Name: this.Name,
+       Price: this.Price,
+       ShippedTo: this.ShippedTo,
+       InStock: this.InStock
+     };
+  }
+}
+
+2. ".html"
+<div class="container-fluid">
+  <h2 class="text-center text-primary">Register Product</h2>
+  <div class="row">
+    <div class="col-3">
+       <div class="form-group">
+        <label>Name</label>
+        <div>
+            <input type="text" class="form-control" [(ngModel)]="Name">
+        </div>
+       </div>
+       <div class="form-group">
+         <label>Price</label>
+         <div>
+             <input type="text" class="form-control" [(ngModel)]="Price" >
+         </div>
+       </div>
+       <div class="form-group">
+         <label>Shipped To</label>
+         <div>
+             <select class="form-control" [(ngModel)]="ShippedTo">
+              <option>Delhi</option>
+              <option>Hyderabad</option>
+             </select>
+         </div>
+       </div>
+       <div class="form-group">
+         <label>In Stock</label>
+         <div>
+             <input type="checkbox" [(ngModel)]="InStock"> Yes
+         </div>
+       </div>
+       <div class="form-group">
+        <button (click)="RegisterClick()" class="btn btn-primary btn-block">Register</button>
+       </div>
+    </div>
+    <div class="col-9">
+        <table class="table table-hover">
+            <colgroup span="1" style="background-color: lightcyan; font-weight: bold;"></colgroup>
+           <tr>
+               <td>Name</td>
+               <td>{{product.Name}}</td>
+           </tr>
+           <tr>
+               <td>Price</td>
+               <td>{{product.Price}}</td>
+           </tr>
+           <tr>
+               <td>Shippied To</td>
+               <td>{{product.ShippedTo}}</td>
+           </tr>
+           <tr>
+               <td>Stock</td>
+               <td>{{(product.InStock==true)?"Available":"Out of Stock"}}</td>
+           </tr>
+        </table>
+    </div>
+  </div>
+</div>
+
+=======================================================================
+
+formValidations
+
+			    Validation in Template Driven Forms
+			    ===================================
+- Validation is the process of verifying user input. 
+- Validation is required to ensure that contractionary and un-authorized data is not stored
+  into the data source. 
+- Angular handle validations client side by using a set of validation services, which are
+  categorized into 2 groups
+
+	o Form State Validation Services
+	o Input State Validation Services
+
+Form State Validation:
+=====================
+- Form State Validation verifies all fields in a form simultaneously at the same time. 
+- The angular services for Form state validation are:
+
+Service Name 	Property 	Description
+============	========	===========
+NgPristine 	pristine 	It returns Boolean true when form is untouched.
+				No modification happened in the form.
+
+NgDirty		dirty 		It returns Boolean true when form modified.
+				At least one field value changed in form then it
+				returns dirty as true.
+
+NgValid 	valid 		It states that all fields in the form have valid data.
+				It returns true when all are valid.
+
+NgInvalid 	invalid 	It returns true when least one field in the form
+				doesn’t contain valid data.
+
+NgSubmitted 	submitted 	It returns true on form submit event occurred.
+
+Syntax:
+=======
+<form #frmRegister=”ngForm”>
+</form>
+frmRegister.pristine
+frmRegister.dirty
+frmRegister.invalid
+Ex:
+1. Formvalidation.component.ts
+--- no change –
+2. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text"
+name="txtName" minlength="4" required>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ </dd>
+ </dl>
+ <button [disabled]="frmRegister.invalid" class="btn btn-primary btn-block">Register</button>
+ <button *ngIf="frmRegister.dirty" class="btn btn-success btn-block">Save</button>
+ </form>
+ </div>
+ <div class="col-9">
+ <h2>Form Validation Services</h2>
+ <table class="table table-hover">
+ <tr>
+ <td>Pristine [No changes occured]</td>
+ <td>{{frmRegister.pristine}}</td>
+ </tr>
+ <tr>
+ <td>Dirty [Modified - Changes Occured]</td>
+ <td>{{frmRegister.dirty}}</td>
+ </tr>
+ <tr>
+ <td>Valid [Form Valid]</td>
+ <td>{{frmRegister.valid}}</td>
+ </tr>
+ <tr>
+ <td>Invalid [Form Invalid]</td>
+ <td>{{frmRegister.invalid}}</td>
+ </tr>
+ <tr>
+ <td>Submitted</td>
+ <td>{{frmRegister.submitted}}</td>
+ </tr>
+ </table>
+ </div>
+ </div>
+</div>
+3. Formvalidation.component.css
+button:disabled {
+ cursor: not-allowed;
+}
+
+Input State Validation:
+======================
+				   
+- It is the process of verifying every form element individually. 
+- Angular provides a set of validation services for input state.
+
+ Service 	Property 	Description
+==========	=========	===========
+ NgPristine 	pristine 	It returns true when any specific element is not yet
+				modified.
+
+ NgDirty 	dirty 		It returns true when any specific element value is
+				modified.
+
+ NgTouched 	touched 	It returns true when element got focus and blurred.
+ NgUntouched 	Untouched 	It returns true when element never touched.
+ NgValid 	valid 		It returns true when form element is having valid data.
+ NgInvalid 	invalid 	It returns true when form element is having invalid data.
+ NgErrors 	errors 		It is a object that collects all errors of input field.
+					- Required
+					- Minlength
+					- Maxlength
+					- Pattern
+					- Email etc..
+Syntax:
+ txtName.pristine
+ txtName.dirty
+ txtName.errors.required
+
+Ex: formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text" name="txtName"
+ minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>
+=====================================
+Custom Validation:
+=================
+- You can write a validation function to verify the input value. 
+- You can conditionally display error messages.
+Ex:
+1. Formvalidation.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-formvalidation',
+ templateUrl: './formvalidation.component.html',
+ styleUrls: ['./formvalidation.component.css']
+})
+export class FormvalidationComponent {
+ public displayCityError = false;
+ public displayEvenError = false;
+ public onCityChanged(val){
+ if(val == 'nocity') {
+ this.displayCityError = true;
+ } else {
+ this.displayCityError = false;
+ }
+ }
+ public VerifyEvenNumber(val){
+ if(val %2 == 0) {
+ this.displayEvenError = false;
+ } else {
+ this.displayEvenError = true;
+ }
+ }
+}
+2. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text"
+ name="txtName" minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ <dt>Your City</dt>
+ <dd>
+ <select (change)="onCityChanged(lstCities.value)" ngModel #lstCities="ngModel"
+ name="lstCities" class="form-control">
+ <option value="nocity">Select a City</option>
+ <option value="Delhi">Delhi</option>
+ <option value="Hyd">Hyd</option>
+ </select>
+ <span *ngIf="displayCityError" class="text-danger">Please Select a City</span>
+ </dd>
+ <dl>
+ <dt>Enter Even Number</dt>
+ <dd>
+ <input (blur)="VerifyEvenNumber(txtEven.value)" type="text" name="txtEven"
+ ngModel #txtEven="ngModel" class="form-control">
+ <span *ngIf="displayEvenError" class="text-danger">Not an Even Number</span>
+ </dd>
+ </dl>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>
+
+Angular CSS validation classes:
+===============================
+- Angular provides a set of CSS validation classes 
+- These classes can identify the validation state of form or input element and apply effects.
+
+ Class Name 		Description
+===========             ===========
+
+.ng-valid 		Apply effects to input or form when it is valid.
+.ng-invalid
+.ng-pristine
+.ng-dirty
+.ng-touched
+.ng-untouched
+Ex:
+1. Formvalidation.component.css
+button:disabled {
+ cursor: not-allowed;
+}
+input.ng-invalid {
+ border: 1px solid red;
+ box-shadow: 2px 2px 3px red;
+}
+input.ng-valid {
+ border:1px solid green;
+ box-shadow: 2px 2px 3px green;
+}
+.errorStyle {
+ border: 1px solid red;
+ box-shadow: 2px 2px 3px red;
+}
+.validStyle {
+ border:1px solid green;
+ box-shadow: 2px 2px 3px green;
+}
+2. Formvalidation.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-formvalidation',
+ templateUrl: './formvalidation.component.html',
+ styleUrls: ['./formvalidation.component.css']
+})
+export class FormvalidationComponent {
+ public displayCityError = false;
+ public cityValidClass = false;
+ public cityInvalidClass = false;
+ public displayEvenError = false;
+ public onCityChanged(val){
+ if(val == 'nocity') {
+ this.displayCityError = true;
+ this.cityInvalidClass = true;
+ this.cityValidClass = false;
+ } else {
+ this.displayCityError = false;
+ this.cityInvalidClass = false;
+ this.cityValidClass= true;
+ }
+ }
+ public VerifyEvenNumber(val){
+ if(val %2 == 0) {
+ this.displayEvenError = false;
+ } else {
+ this.displayEvenError = true;
+ }
+ }
+}
+3. Formvalidation.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-5">
+ <form #frmRegister="ngForm">
+ <h2>Register User</h2>
+ <dl>
+ <dt>User Name</dt>
+ <dd>
+ <input class="form-control" ngModel #txtName="ngModel" type="text" name="txtName"
+ minlength="4" required>
+ <div *ngIf="txtName.touched && txtName.invalid" class="text-danger">
+ <span *ngIf="txtName.errors.required">Name Required</span>
+ <span *ngIf="txtName.errors.minlength">Name too short..</span>
+ </div>
+ </dd>
+ <dt>Mobile</dt>
+ <dd>
+ <input class="form-control" type="text" name="txtMobile" ngModel
+ #txtMobile="ngModel" required pattern="\+91[0-9]{10}">
+ <div class="text-danger" *ngIf="txtMobile.touched && txtMobile.invalid">
+ <span *ngIf="txtMobile.errors.required">Mobile Required</span>
+ <span *ngIf="txtMobile.errors.pattern">Invalid Mobile</span>
+ </div>
+ </dd>
+ <dt>Your City</dt>
+ <dd>
+ <select [ngClass]="{errorStyle:cityInvalidClass, validStyle:cityValidClass}"
+ (change)="onCityChanged(lstCities.value)" ngModel #lstCities="ngModel" name="lstCities"
+ class="form-control">
+ <option value="nocity">Select a City</option>
+ <option value="Delhi">Delhi</option>
+ <option value="Hyd">Hyd</option>
+ </select>
+ <span *ngIf="displayCityError" class="text-danger">Please Select a City</span>
+ </dd>
+ <dl>
+ <dt>Enter Even Number</dt>
+ <dd>
+ <input required (blur)="VerifyEvenNumber(txtEven.value)" type="text" name="txtEven"
+ ngModel #txtEven="ngModel" class="form-control">
+ <span *ngIf="displayEvenError" class="text-danger">Not an Even Number</span>
+ </dd>
+ </dl>
+ </dl>
+ <button class="btn btn-primary btn-block">Register</button>
+ </form>
+ </div>
+ </div>
+</div>
+				   Reactive Forms or Model Driven Forms
+				   ====================================
+- Reactive forms provide Model driven approach. 
+- They are bound to model so that any change in model will update the view. 
+- Configuration of forms and controls are defined at application logic level. 
+- Easy to extent and loosely coupled. 
+- Easy to test. 
+- Clean separation of functionality and presentation (Implementation and Design). 
+- Reactive forms are asynchronous, they allow to submit only a specific port of form. 
+- They support partial updates. 
+- You can dynamically add or remove controls from form. 
+- The library required for configuration and implementation of reactive forms is
+ @angular/forms with following classes.
+	o ReactiveFormsModule
+	o FormsModule
+ app.module.ts
+ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+ imports: [
+	FormsModule,
+        ReactiveFormsModule
+  ]
+Configure a Form Control:
+========================
+- The form elements like textbox, checkbox, radio, dropdown, list etc. are configured by using
+  “FormControl” base. 
+- FormControl is the base for creating a form element.
+Syntax:
+Public elementName = new FormControl(‘value’, options); 
+- It is implemented in UI by using “[formControl]” property
+Syntax:
+ <input type=”text” [formControl]=”elementName”>
+- Dynamically you can set value or update value by using the functions
+	o setValue()
+	o patchValue()
+Syntax:
+this.elementName.setValue(‘somevalue’);
+Ex:
+1. reactivedemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+@Component({
+ selector: 'app-reactivedemo',
+ templateUrl: './reactivedemo.component.html',
+ styleUrls: ['./reactivedemo.component.css']
+})
+export class ReactivedemoComponent {
+ public txtName = new FormControl('');
+ public lstCities = new FormControl('');
+ public UpdateClick() {
+ this.txtName.setValue('LG Mobile');
+ this.lstCities.setValue('Hyd');
+ }
+}
+2. reactivedemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input [formControl]="txtName" type="text" class="form-control">
+ </dd>
+ <dt>Select City</dt>
+ <dd>
+ <select [formControl]="lstCities" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <button (click)="UpdateClick()" class="btn btn-primary btn-block">Update</button>
+ </dl>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{txtName.value}}</dd>
+ <dt>City</dt>
+ <dd>{{lstCities.value}}</dd>
+ </dl>
+ </div>
+ </div>
+</div>
+=========================================
+			    Create and Configure Form and Nested Forms
+			    ==========================================
+
+- You can dynamically create and configure forms. 
+- It allows to extend the form and make it more asynchronous. 
+- You can create a form by using “FormGroup” base. 
+- FormGroup is a collection of FormControls.
+
+Syntax:
+Public parentForm = new FormGroup({
+ controlName: new FormControl(‘ ‘),
+ childForm: new FormGroup({
+controlName: new FormControl(‘ ‘)
+ })
+}) 
+- To bind a form and nested form you have to use the properties
+
+	o formGroup – Parent Form
+	o formGroupName – Child Form
+
+ <form [formGroup]=”parentForm”>
+ <div [formGroupName]=”childForm”>
+ </div>
+</form>
+- Form control is defined by using “formControlName”
+ <input type=”text” formControlName=”controlName”>
+
+- setValue() is used to set value into any element. 
+- patchValue() it configures asynchronous binding.
+
+Ex:
+1. reactivedemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+@Component({
+ selector: 'app-reactivedemo',
+ templateUrl: './reactivedemo.component.html',
+ styleUrls: ['./reactivedemo.component.css']
+})
+export class ReactivedemoComponent {
+ public frmRegister = new FormGroup({
+ Name: new FormControl(''),
+ Price: new FormControl(''),
+ frmDetails: new FormGroup({
+ City: new FormControl(''),
+ InStock: new FormControl('')
+ })
+ });
+ public UpdateParital() {
+ this.frmRegister.patchValue({
+ Name: 'Samsung TV',
+ frmDetails: {
+ City: 'Delhi',
+ InStock: true
+ }
+ })
+ }
+}
+2. reactivedemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ </fieldset>
+ <button (click)="UpdateParital()" class="btn btn-primary btnblock">Update</button>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of
+ Stock"}}</dd>
+ </dl>
+ </div>
+</div>
+
+				   FormBuilder in Reactive Form
+				   ============================
+
+- FormBuilder is a service provided by Angular to configure forms and its elements
+ dynamically. 
+- FormBuilder uses singleton pattern. - FormBuilder provides methods
+	o group()
+	o control()
+	o array() 
+- Group() configures a form group. 
+- Control() configures form control. 
+- Array() configure a collection of form controls. You can add or remove controls
+ dynamically. 
+- The properties used for element in FormBuilder to bind with UI.
+	o formGroup : Parent Form
+	o formGroupName : Child Form
+	o formControlName : Form Elements
+EX:
+1. formbuilderdemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+@Component({
+ selector: 'app-formbuilderdemo',
+ templateUrl: './formbuilderdemo.component.html',
+ styleUrls: ['./formbuilderdemo.component.css']
+})
+export class FormbuilderdemoComponent implements OnInit {
+ constructor(private fb: FormBuilder) { }
+ public frmRegister = this.fb.group({
+ Name: [''],
+ Price: [''],
+ frmDetails: this.fb.group({
+ City: [''],
+ InStock: ['']
+ })
+ });
+ ngOnInit(): void {
+ }
+}
+2. formbuilderdemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ </fieldset>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of Stock"}}</dd>
+ </dl>
+ </div>
+ </div>
+
+FormArray & FormControl:
+=======================
+
+- FormArray allows to add or remove any form element dynamically. 
+- It uses FormBuilder “array()” method. 
+- It is implementing TypeScript array, which can use all array functions like push(), shift(),
+  pop(), removeAt() etc.
+Ex:
+1. Formbuilderdemo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormArray } from '@angular/forms';
+@Component({
+ selector: 'app-formbuilderdemo',
+ templateUrl: './formbuilderdemo.component.html',
+ styleUrls: ['./formbuilderdemo.component.css']
+})
+export class FormbuilderdemoComponent implements OnInit {
+ constructor(private fb: FormBuilder) { }
+ public frmRegister = this.fb.group({
+ Name: [''],
+ Price: [''],
+ frmDetails: this.fb.group({
+ City: [''],
+ InStock: ['']
+ }),
+ newControls: this.fb.array([
+ this.fb.control('')
+ ])
+ });
+ get newControls(){
+ return this.frmRegister.get('newControls') as FormArray;
+ }
+ public AddPhoto(){
+ this.newControls.push(this.fb.control(''));
+ }
+ public RemovePhoto(i) {
+ this.newControls.removeAt(i);
+ }
+ ngOnInit(): void {
+ }
+}
+2. Formbuilderdemo.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h3>Register Product</h3>
+ <form [formGroup]="frmRegister">
+ <fieldset>
+ <legend>Basic Info</legend>
+ <dl>
+ <dt>Name</dt>
+ <dd>
+ <input class="form-control" formControlName="Name" type="text">
+ </dd>
+ <dt>Price</dt>
+ <dd>
+ <input class="form-control" type="text" formControlName="Price">
+ </dd>
+ </dl>
+ </fieldset>
+
+ <fieldset>
+ <legend>Stock Details</legend>
+ <div formGroupName="frmDetails">
+ <dl>
+ <dt>City</dt>
+ <dd>
+ <select formControlName="City" class="form-control">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </dd>
+ <dt>In Stock</dt>
+ <dd>
+ <input formControlName="InStock" type="checkbox">
+ </dd>
+ </dl>
+ </div>
+ <div>
+ <h2>
+ Upload Photo
+ <button (click)="AddPhoto()" class="btn btn-link">Add More</button>
+ </h2>
+ <div style="margin-top: 20px;" *ngFor="let control of newControls.controls; let
+ i=index">
+ <input type="file" formControlName="i">
+ <button (click)="RemovePhoto(i)" class="btn btn-link">Remove</button>
+ </div>
+ </div>
+ </fieldset>
+ </form>
+ </div>
+ <div class="col-9">
+ <h3>Details</h3>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.Name}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.Price}}</dd>
+ <dt>City</dt>
+ <dd>{{frmRegister.value.frmDetails.City}}</dd>
+ <dt>Stock</dt>
+ <dd>{{(frmRegister.value.frmDetails.InStock==true)?"Available":"Out of Stock"}}</dd>
+ </dl>
+ </div>
+ </div>
+ 
+======================================
+Add IIS to your windows Pc[optional]
+====================================
+1. open control pannel
+2. go to programs and features
+3. click on turn windows features on or off
+4. select internet information service
+5. click ok
+
+
+Test Webserver:
+===============
+
+1. open any browser : Chrome,Firebox,Ie,etc
+2. Type the virtual address
+	http://localhost
+		or
+	http://127.0.0.1
+
+
+Creating a website on Local server:
+===================================
+1. open IIS
+	run -> inetmgr
+2. expand local computer [http://localhost]
+3. expand "Sites" Folder
+4. Right Click on "default Website"
+5. Select the option "Add Virtual Directory"
+	alias[site.name] : Ebay
+	Physical path : C:\Ebay
+
+   Virtual Path:   http://localhost/Ebay
+   Physical Path:  C:\Ebay
+
+Add Resources into Website:
+==========================
+1. open physical path in file explorer
+	|_ in  IIS -> Right click on site name  -> explore
+2.add Folders by name
+	-Images
+	-Docs
+3. Add pictures into images Folder
+	.jpg,.png,.gif
+4. add any document into Docs Folder
+	.pdf, .docx
+        
+
+
+setup environment for UI Technologies:
+======================================
+1. Install node Js for NPM on Your PC
+	- visit the Site
+	  http://nodejs.org/en download/
+ - Clickon on other downloads 
+ - Download ".msi" for windows or MAC
+ - install ".msi" file by following the wizard
+ - Test from command prompt
+	c:\> node -v
+	c:\> npm -v
+2. Install visual studio code IDE
+	- visit the website
+	  http://code.visualstudio.com/
+ - Download setup for windows 
+ - Install on your PC
+ - open VS Code from desktop or your programs
+ - Go to "Extensions"
+ - Search and Install following extensions
+	a) open in browser
+	b) Live server
+	c) VScode-icons
+
+Setup project for Webdevelopment:
+================================
+1. open any drive on your pc and create a newFolder
+	"Webdevelopment"
+	[c:\webdevelopment]
+2. open Visual Studio code
+3. Go to file menu -> open folder
+4.Select "c:\webdevelopment"
+
+Link your project to localserver:
+================================
+1. open localserver : IIS
+	-> controlpanel
+	-> administrative tools
+	-> internet information service manager
+2. expands "Sites" folder
+3. Right Click on "default website"
+4. Select the option "Add Virtual Directory"
+	Alias[site name] : webdevelopment
+	physical path :  C:\webdevelopment
+
+Test your application:
+======================
+1. open any Browser: chrome
+2. type the following URL
+	http://localhost/webdevelopment
+
+                                   
+installing bootstrap for your project:
+=====================================
+1. open your project in "VS code"
+2. open "Terminal" by using
+	ctrl+`
+3. Type the following command 
+    C:/webdevelopment> npm install bootstrap
+4. Bootstrap copied into following path
+	node_modules
+	|_
+	   bootstrap
+	   |_
+	      dist
+		|_
+		   css
+		    |_
+			Bootstrap.css
+
+Installing JQuery:
+==================
+1.open your  project location in command prompt or VS code Terminal
+2.type the following command
+  c:\webdevelopment>npm install jquery
+3.This will install the library
+	node_modules
+	|_
+	  jquery
+	   |_
+	     dist
+		|_
+		  jquery.js
+
+
+
+Install JQuery UI:
+==================
+1.visit the official website of JQuery
+	https://jqueryui.com/
+2.Download
+    JQuery UI library
+3.extract the ".zip" file
+4.copy all library files
+5.Go to your project "node_modules
+6.add a new folder by Name "Jquery-ui"
+7.paste all Jquery ui library files,which includes
+	Jquery_ui
+	 |_
+	   jquery-ui.js
+	    |_
+	      jquery-ui.css
+
+ex:
+ <link rel="stylesheet" href="../node_modules/jquery-ui/jquery-ui.js/jquery-ui.css">
+
+
+
+Installing AngularJs:
+====================
+1.open your project in VS code
+2.open Terminal[ctrl+`]
+3.Type the command
+	>npm install angular
+4.it will install following
+	node_modules
+	|_
+	  Angular
+	  |_
+	   Angular.js
+
+
+
+Setup Environment for typescript:
+=================================
+2.Install TypeScript
+  - open windows command prompt
+      C:\>npm install -g typescript@latest
+
+  - verify typescript version[3.8.3]
+      C:\>tsc -v
+3.Download and install visual studio code[IDE]
+4.open VS code home screen and select the link
+	"Install support for javascript"
+5.Go to VS code "Extensions", search for following Extensions and install for VS code
+	- EsLint
+	- TsLint
+	- VS code-icons
+	- LiveServer
+	- open in Browser
+6.Create a new folder for typescript project
+	C:\Typescriptonlineclass
+7.open your project folder in VS code
+8.Create a new file "[+]Newfile"
+	hello.ts
+  var msg ="Welcome to Typescript" ;
+  document.write("<h2>" + msg + "</h2>");
+9.Go to "Terminal menu " and select "New Terminal"
+	[ctrl+`] 
+10.Transcompile Ts into Js
+   C:\typescriptonlineclass>tsc hello.ts
+   [it generates hello.js]
+11.Create a new HTML file by Name
+	"index.html"
+  <!DOCTYPE html>
+  <html>
+  <head>
+  <script src="hello.js" type="text/javascript">
+  </script>
+  </head>
+  </html>
+
+
+Setup Environment for Angular:
+==============================
+1.Install node js
+2.Install Typescript
+3.Install Angular cli
+  - open command prompt
+  - Install with NPM
+  >npm install -g @angular/cli
+
+  - update to new Version
+  >ng update @angular/cli @angular/core
+
+
+Creating a new Angular App:
+===========================
+1. Create a new Folder in your PC
+	"Angular_Online_Projects"
+
+2. Open folder location in command prompt
+
+	>ng new appName
+	>ng new Amazon
+
+3. It will ask for
+    ? Would you like to add Angular routing? (y/N) N
+    ? Which stylesheet format would you like to use? CSS
+
+4. It creates a new Application 
+
+
+
+Setup Multiple Project in Workspace:
+===================================
+
+1. Create  a new Workspace
+> ng new Angular-workspace --createApplication="false"
+
+2. Create a new Application in Workspace
+
+> cd Angular-workspace
+> ng generate application  appName
+   ng  generate application  Amazon
+
+Infrastructure of Project [Angular Application]
+
+
+Starting with a Project in WorkSpace:
+===============================
+1. Open Terminal
+2. In Workspace you type the following command
+
+    >ng serve  --project=Amazon
+
+   Server starts listening on "http://localhost:4200"
+
+3. Open Browser and Request URL
+	http://localhost:4200
+
+
+Download and Configure Fontawesome:
+===================================
+1. https://fontawesome.com/how-to-use/on-the-web/setup/hosting-font-awesome-yourself
+2. Download for Web
+3. Extract and copy its folders
+4. Go to Your workspace “node_modules”
+5. Create a new folder by name “fonts” and paste the copied files
+6. Import into “styles.css” folder
+    @import "../../../node_modules/fonts/css/all.css";
+
+Setup Angular Material for your Project:
+=======================================s
+1. Open Your App folder in terminal
+    >ng add @angular/material
+    ? Which theme - Indigo - Pink
+    ? Set up global Angular Material typography styles? Y
+    ? Set up browser animations for Angular Material? Y
+
+2. Goto "styles.css"
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+

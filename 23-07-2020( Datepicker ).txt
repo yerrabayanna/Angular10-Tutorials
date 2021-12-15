@@ -1,0 +1,24 @@
+1.import following into app.module.ts
+  
+  import { MatDatepickerModule } from '@angular/material/datepicker';
+  import { MatNativeDateModule } from '@angular/material/core';
+
+
+  imports: [
+
+    MatDatepickerModule,
+    MatNativeDateModule
+
+  ],
+
+
+2.component.html
+
+<form>
+    <h2>Date Picker</h2>
+    <mat-form-field>
+        <input type="text" matInput [matDatepicker]="picker" placeholder="Departure Date">
+        <mat-datepicker-toggle [for]="picker" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</form>

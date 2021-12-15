@@ -1,0 +1,155 @@
+Angular Services
+- Service is a pre-defined business logic which can be reused in the application by injecting
+into any component. 
+- Service is a collection of Factories. 
+- Factory is a collection of related type of functions. 
+- You can inject a factory into any component in order to use the functionality. - Factory uses a single call mechanism. Every time when you want to use a function you need
+an object to create. [Disconnected – Discrete]
+- Service uses a Single Ton mechanism. Object is created for first request and the same object
+is used across any number of requests. [Connected – Continuous]
+- Angular service is a class with a set of functions [service methods] that return any specific
+functionality. - Angular service implements the functionality from “Injectable()” directive. - Injectable allows service to use a single ton mechanism so that it can be injected into any
+component.
+Syntax:
+Import { Injectable } from ‘@angular/core’;
+@Injectable(
+ providedIn: ‘root’
+) // decorator for service
+export class ServiceName {
+serviceMethod() { }
+}
+- You have to register a service in order use in application. Services are registered in
+“app.module.ts” at
+providers: [ ServiceName ]
+- CLI command for generating service:
+> ng g service serviceName –skipTests
+Ex:
+1. Add a new file into “app” folder
+“captcha.service.ts”
+import { Injectable } from '@angular/core';
+@Injectable({
+ providedIn: 'root'
+})
+export class CaptchaService {
+ public GenerateCode() {
+ let a = Math.random() * 10;
+ let b = Math.random() * 10;
+ let c = Math.random() * 10;
+ let d = Math.random() * 10;
+ let e = Math.random() * 10;
+ let f = Math.random() * 10;
+ let code = `${Math.round(a)} ${Math.round(b)} ${Math.round(c)} ${Math.round(d)}
+${Math.round(e)} ${Math.round(f)}`;
+ return code;
+ }
+}
+2. Register service in “app.module.ts”
+providers: [ CaptchaService ],
+3. Inject into “LoginComponent”
+4. login.component.ts
+import { Component } from '@angular/core';
+import { CaptchaService } from '../captcha.service';
+@Component({
+ selector: 'app-login',
+ templateUrl: 'login.component.html',
+ styleUrls: ['login.component.css']
+})
+export class LoginComponent {
+ public code;
+ constructor(private captcha: CaptchaService) {
+ this.code = captcha.GenerateCode();
+ }
+ public title = 'User Login';
+ public NewCode() {
+ this.code = this.captcha.GenerateCode();
+ }
+}
+5. login.component.html
+<div class="box">
+ <h2>{{title}}</h2>
+ <div class="group">
+ <label>User Name</label>
+ <div>
+ <input type="text">
+ </div>
+ </div>
+ <div class="group">
+ <label>Password</label>
+ <div>
+ <input type="password">
+ </div>
+ </div>
+ <div class="group">
+ <label>Verify Code</label>
+ <div>
+ <button (click)="NewCode()">{{code}} <span class="fa fa-sync-alt"></span></button>
+ </div>
+ </div>
+ <div class="group">
+ <button>Login</button>
+ </div>
+</div>
+6. login.component.css
+.box {
+ justify-content: center;
+ align-items: center;
+ margin:auto;
+ width:300px;
+ border:2px solid darkcyan;
+ box-shadow: 2px 2px 3px darkcyan;
+ padding: 10px;
+ margin-top: 20px;
+}
+.group {
+ margin-bottom: 20px;
+}
+button {
+ background-color: darkcyan;
+ color:white;
+}
+Ex: Data
+1. Generate a service
+ ng g service data --skipTests
+2. data.service.ts
+import { Injectable } from '@angular/core';
+@Injectable()
+export class DataService {
+ public GetProducts(){
+ return [
+ {Name: 'JBL Speaker', Price: 45000.55, Photo: 'assets/jblspeaker.jpg', Category:
+'Electronics'},
+ {Name: 'Earpods', Price: 4000.55, Photo: 'assets/earpods.jpg', Category: 'Electronics'},
+ {Name: 'Nike Casuals', Price: 9000.55, Photo: 'assets/shoe.jpg', Category: 'Footwear'},
+ {Name: 'Lee Cooper Boot', Price: 3000.55, Photo: 'assets/shoe1.jpg', Category:
+'Footwear'},
+ {Name: 'Shirt', Price: 2600.55, Photo: 'assets/shirt.jpg', Category: 'Fashion'},
+ {Name: 'Jeans', Price: 2000.55, Photo: 'assets/jeans.jpg', Category: 'Fashion'}
+ ];
+ }
+}
+3. Goto “app.module.ts” and register service
+providers: [ CaptchaService, DataService ],
+4. Productslist.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+@Component({
+ selector: 'app-productslist',
+ templateUrl: './productslist.component.html',
+ styleUrls: ['./productslist.component.css']
+})
+export class ProductslistComponent implements OnInit {
+ constructor(private data: DataService){
+ }
+ public products = [];
+ ngOnInit() {
+ this.products = this.data.GetProducts();
+ }
+ public ElectronicCount = this.products.filter(x=>x.Category=='Electronics').length;
+ public FootwearCount = this.products.filter(x=>x.Category=='Footwear').length;
+ public FashionCount = this.products.filter(x=>x.Category=='Fashion').length;
+ public selectedCategoryValue = 'All';
+ public onFilterCategoryChanged(selectedCategoryName) {
+ this.selectedCategoryValue = selectedCategoryName;
+ }
+}
+Angular Forms

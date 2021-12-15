@@ -1,0 +1,150 @@
+- Inline Technique
+- Code Behind Technique
+
+	Add Component by using CLI Commands
+- CLI commands can identify the dependencies required for the component and install or configure all dependencies implicitly.
+
+1. Change into Project folder in Terminal
+2. Use the "ng  generate" command
+
+     >ng  generate  component  name --dryRun=true
+     >ng  g  c  name  --dryRun=true
+
+    Dry Run will give the preview of files generated for component. It will not actually create the component.
+
+Ex: Component is in separate folder
+
+ng generate component register --dryRun=true --skip-import
+		Amazon
+		|_register
+		   |_register.component.ts
+		   |_register.component.html
+		   |_register.component.css
+		   |_register.component.specs.ts
+
+Ex: Component files in app folder i.e without separate folder
+
+ng generate component register --dryRun=true --skip-import
+ --flat=true
+
+		Amazon
+		|_register.component.ts
+		|_register.component.html
+		|_register.component.css
+		|_register.component.specs.ts
+
+Ex: Component inline with styles and template [html]
+
+ng generate component register --dryRun=true --skip-import --inlineStyle=true  --inlineTemplate=true
+
+Ex: Create component - skip tests
+
+ng generate component register --dryRun=true --skip-import --inlineStyle=true  --inlineTemplate=true  --skipTests=true
+
+
+		"Generate Component"
+		===================
+
+Note: Always create component in your "app" folder
+
+C:\Angular-workspace\projects\Amazon\src\app>
+   
+	ng g c register --skipTests=true
+
+
+	             Data Binding in Angular
+	             ====================
+- It is a technique used to bind the data of a component to its View [UI].
+- Angular handle data binding by using
+	a) Interpolation
+	b) Property or Attribute 
+
+Interpolation:
+ - It uses a data binding expression "{{  }}"
+ - It can bind data to HTML attributes and properties.
+ 
+FAQ: What is difference between an attribute and property?
+A. Tags are defined with attribute.
+     Attributes are used with static values.
+
+     Elements are defined with properties.
+     Properties are used with dynamic values.
+
+     Every Attribute of HTML tag is not having a same relative property in Element every time.
+
+	<div class="text-primary" id="container">
+
+	document.getElementById("container").className="text-danger"
+
+     Attributes of HTML element don't even have a relative property.
+
+	<table height="100">
+	
+	var tab = document.createElement("table");
+	tab.height = // invalid no height property 
+
+
+Angular supports values to bind directly to properties. How ever you also bind to attributes.
+	
+- In interpolation you can directly use expression as a literal.
+	<dd> {{  literal }} </dd>
+
+- You can bind angular expression to the attribute [which is having same name property].
+
+	<dd innerHTML={{data}}> </dd>
+
+- The advantage of interpolation is it can evaluate an value and bind the returned value.
+
+- Interpolation uses one way binding i.e any change in the value will not be updated to the model data.
+
+- Interpolation is one time rendering.
+
+
+Ex:
+1. Add a new Component
+	app> ng g c register --skipTests=true
+
+2. register.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
+})
+export class RegisterComponent {
+  public product = {
+    Name: 'Samsung TV',
+    Price: 45000.55,
+    InStock: false
+  };
+}
+
+3. register.component.html
+
+<div class="container">
+    <h2>Product Details</h2>
+  <dl>
+      <dt>Name</dt>
+      <dd>{{product.Name}}</dd>
+      <dt>Price</dt>
+      <dd innerHTML="{{product.Price}}"></dd>
+      <dt> Stock</dt>
+      <dd innerHTML="{{(product.InStock==true)?'Available':'Out of Stock'}}"></dd>
+  </dl>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+Change Detection
+
+
+ngOnChanges - Sets the value
+- Bind the value
+- Detect the changes in value
+- Update the changes to Model - SimpleChanges is the base that identifies the changes by access
+o CurrentValue
+o PreviousValue
+Ex:
+1. Generate components
+> ng g c sendvalue
+> ng g c displayvalue
+2. Sendvalue.component.ts
+export class SendvalueComponent {
+ public username = 'John';
+}
+3. Sendvalue.component.html
+<div class="container">
+ <h2>Parent</h2>
+ <input type="text" [(ngModel)]="username">
+ <app-displayvalue [username]="username"></app-displayvalue>
+</div>
+4. Displayvalue.component.ts
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+@Component({
+ selector: 'app-displayvalue',
+ templateUrl: './displayvalue.component.html',
+ styleUrls: ['./displayvalue.component.css']
+})
+export class DisplayvalueComponent implements OnChanges{
+ @Input() public username;
+ public currentvalue;
+ public previousvalue;
+ public msg;
+ ngOnChanges(changes: SimpleChanges) {
+ for(var property in changes) {
+ let change = changes[property];
+ this.currentvalue = change.currentValue;
+ this.previousvalue = change.previousValue;
+ }
+ if(this.currentvalue==this.previousvalue) {
+ this.msg = 'No Change Detected';
+ } else {
+ this.msg = 'Change Detected';
+ }
+ }
+}
+5. Displayvalue.component.html
+<div>
+ <h3>Child Component</h3>
+ Hello ! {{username}}
+</div>
+<h3>{{msg}}</h3>
+<div>
+ <dl>
+ <dt>Previous Value</dt>
+ <dd>{{previousvalue}}</dd>
+ <dt>Current Value</dt>
+ <dd>{{currentvalue}}</dd>
+ </dl>
+</div>
+Angular Pipes

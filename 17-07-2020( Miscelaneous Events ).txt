@@ -1,0 +1,173 @@
+Miscelaneous Events
+- click
+- dblclick
+- cut
+- copy
+- paste
+- selectstart
+- select
+- change
+- focus
+- blur
+- submit etc..
+
+focus 	- specifies actions to perform when control gets
+	  focus.
+
+blur	- specifies the actions to perform when control
+	  looses the focus.
+
+Ex:  miscelanous events
+
+1.  .ts file
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-miscelaneous',
+  templateUrl: './miscelaneous.component.html',
+  styleUrls: ['./miscelaneous.component.css']
+})
+export class MiscelaneousComponent {
+  public showMsg = false;
+  public msg = 'Name in Block Letters';
+  public txtName;
+  public onBlur() {
+    this.showMsg = false;
+    this.txtName = this.txtName.toUpperCase();
+  }
+  public onFocus() {
+    this.showMsg = true;
+  }
+  public onCut() {
+    this.msg = 'Removed - Placed on Cliboard';
+  }
+  public onCopy(){
+    this.msg = 'Copied to Clipboard';
+  }
+  public onPaste(){
+    this.msg = 'Inserted from Clipboard';
+  }
+}
+
+
+2. .html
+
+<div class="container">
+  <label>User Name</label>
+  <div>
+      <input [(ngModel)]="txtName" (focus)="onFocus()" (blur)="onBlur()" (cut)="onCut()" (copy)="onCopy()" (paste)="onPaste()" type="text" class="form-control" placeholder="Name in Block Letters">
+      <span *ngIf="showMsg">{{msg}}</span>
+  </div>
+</div>
+
+Submit Event:  
+- It is defined for <form> element.
+- Submit event fires up on submit button click.
+- Form submit can happen by default only on submit click.
+- You can explicitly implement submit for other elements.
+
+Ex:
+1. .ts
+
+export class MiscelaneousComponent {
+  public FormSubmit() {
+    alert('Form Submitted');
+  }
+  public OnChange(){
+    this.FormSubmit();
+  }
+}
+
+2. .html
+
+<div class="container">
+   <form method="POST" (submit)="FormSubmit()">
+       <h2>Submit Form</h2>
+       <button>Submit</button>
+       <button type="reset">Reset</button>
+       <button type="button">Ordinary</button>
+       <button type="submit">Another Submit</button>
+       <h2>Submit on Change</h2>
+       <select (change)="OnChange()">
+           <option>Insert</option>
+           <option>Delete</option>
+       </select>
+   </form>
+</div>
+		Change Event
+dropdown, listbox, numberic up/down [number], slider [range],
+
+1.  changedemo.component.ts
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-changedemo',
+  templateUrl: './changedemo.component.html',
+  styleUrls: ['./changedemo.component.css']
+})
+export class ChangedemoComponent {
+  public products = [
+    {Name: 'Earpods', Photo: 'assets/earpods.jpg'},
+    {Name: 'JBL Speaker', Photo: 'assets/jblspeaker.jpg'},
+    {Name: 'Nike Causals', Photo: 'assets/shoe.jpg'},
+    {Name: 'Shirt', Photo: 'assets/shirt.jpg'},
+    ];
+  public sliderValue = 0;
+  public title = 'Earpods';
+  public photo = 'assets/earpods.jpg';
+  public count = 0;
+  public ChangeImage(index){
+     this.title = this.products[index].Name;
+     this.photo = this.products[index].Photo;
+  }
+  public SliderChange(){
+    this.ChangeImage(this.sliderValue);
+  }
+  public PreviousClick(){
+    this.count--;
+    this.ChangeImage(this.count);
+    this.sliderValue = this.count;
+  }
+  public NextClick() {
+    this.count++;
+    this.ChangeImage(this.count);
+    this.sliderValue = this.count;
+  }
+}
+
+2. changedemo.component.html
+
+<div class="container-fluid">
+  <h2 class="text-primary text-center">Products Catalog</h2>
+  <div class="row">
+    <div class="col-2">
+        <button (click)="PreviousClick()" class="btn btn-success">
+            <span class="fa fa-chevron-circle-left"></span>
+        </button>
+    </div>
+    <div class="col-8 text-center">
+        <div class="row">
+            <h3>{{title}}</h3>
+        </div>
+        <div class="row">
+          
+            <img align="left" [src]="photo" width="600" height="300">
+            
+        </div>
+        <div class="row">
+            <input type="range" (change)="SliderChange()" [(ngModel)]="sliderValue" value="0" [max]="products.length - 1">
+        </div>
+    </div>
+    <div class="col-2">
+        <button (click)="NextClick()" class="btn btn-success">
+            <span class="fa fa-chevron-circle-right"></span>
+        </button>
+    </div>
+  </div>
+</div> 
+
+
+
+

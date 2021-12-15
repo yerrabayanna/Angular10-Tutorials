@@ -1,0 +1,66 @@
+A Component in another Component
+Communication between components
+Transporting Data from one component to another
+Custom Events for Component
+Component Life Cycle Hooks
+Use Components from Angular Component Library 
+	"Angular Material"
+
+        *Accessing a Component in Another Component*
+         ----------------------------------------------------------------------
+- You can access any component and render into the current component by using its "selector".
+
+Syntax:
+	<app-parent>
+	    <app-child> </app-child>
+	</app-parent>
+
+1. Add a following components
+	> ng g c parent
+	> ng g c child
+
+2. child.component.html
+
+<div class="container" style="padding: 30px; text-align: center; background-color: green; color:white;">
+  <h2>Child Component</h2>
+</div>
+
+3. parent.component.html
+
+<div class="container-fluid" style="background-color: lightgoldenrodyellow; height: 200px; margin:10px">
+  <h2>Parent Component</h2>
+  <app-child></app-child>
+</div>
+
+
+Trasporting Data by using "@Input()" directive
+-------------------------------------------------------------------
+- Any property defined in a component is not accessible to another component.
+- You mark the property with @Input() directive so that it can access input of value from another component.
+
+Syntax:
+	@Input()  public  childProperty= ' ';
+
+- You can access the Input property in any another component by using property binding technique.
+
+	<app-child  [childProperty]="value"> </app-child>
+
+ <form oninput>
+ <output> </output>
+
+
+
+<form id="frmDemo" oninput="x.value=parseInt(a.value) + parseInt(b.value)">
+ n1 : <input type="number" id="a" name="a" value="50">
+<br>
+ n2 : <input type="number" id="b" name="b" value="20">
+ <br>
+ <button> Submit </button>
+</form>
+<output form="frmDemo" id="x" name="x" for="a+b">
+</output>
+
+@Input()	- take value
+@Output() - emits the value
+
+

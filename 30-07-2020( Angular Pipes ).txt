@@ -1,0 +1,87 @@
+Angular Pipes
+- Pipe is used to transform data. - Data comes from various sources.
+ - The data type of the Origin and the data type of TypeScript may differ.
+o Database [varchar] TypeScript [string]
+o Database [Date] TypeScript [any-Date-Time]
+- The data can’t be displayed exactly how we are expecting.
+- You can transform the data into desirable format by using PIPE. 
+- Angular provides PIPES for formatting and filtering the data. 
+- All Pipes in Angular are derived from “PipeTransform” base. 
+- Angular provides several built-in PIPES and also allows to create our own Pipes. 
+- Angular Built-in Pipes are:
+o AsyncPipe
+o CurrencyPipe
+o DatePipe
+o DecimalPipe
+o I18nPluralPipe
+o I18nSelectPipe
+o JsonPipe
+o KeyValuePipe
+o LowerCasePipe
+o UpperCasePipe
+o TitleCasePipe
+o PercentPipe
+o SlicePipe
+- Angular Pipes are assigned to your data by using “|” symbol. 
+- Angular Pipes are by default “Pure” Pipes. They will not change the value; they just
+define a format for value. 
+- If Pipe can change the state and value then it is “Impure”.
+Syntax:
+{{ data | pipeName }}
+1. UpperCasePipe: It converts all letters into Block Letters.
+2. LowerCasePipe: It converts all letters into lowercase letters.
+3. TitleCasePipe: It sets capitalization of every word first character in a sentence.
+Syntax:
+public msg = ‘welcome to angular’;
+{{msg | uppercase }}  WELCOME TO ANGULAR
+{{msg | lowercase }}  welcome to angular
+{{msg | titlecase }}  Welcome To Angular
+4. DecimalPipe: It is used to display numeric value with thousands separator and
+fractions. It is accessed and used by the name “number”.
+Syntax:
+{{ data | number : {minIntegerDigits}.{minFractionDigitis}-{maxFractionDigits} }}
+Ex:
+public price = 45000.50;
+{{ price }} - 45000.5
+{{ price | number }} - 45,000.5
+{{ price | number: ‘5.2-4’ }} - 45,000.50
+{{ price | number: ‘5.4-4’ }} - 45,000.5000
+5. CurrencyPipe: It is used to display numbers in a currency format. It comprises of
+currency symbol, digits info.
+Syntax:
+{{ data | currency: ‘CurrencyFormat’ : ‘digitsInfo’ }}
+Currency Format : USD, INR [you can also use currency literals – symbols – Html
+literals]
+Digits Info : {minInteger}.{minFraction}-{maxFraction}
+Ex;
+public price = 45000.50;
+{{ price | currency }} : $45,000.50
+{{ price | currency: ‘INR’}} : R 45,000.50
+6. DatePipe: It is used for display date and time values in various date and time
+formats. You can use predefined formats for Date or you can define custom format
+for date.
+Pre-Defined Date Formats
+o short
+o medium
+o long 
+o full
+o shortDate
+o mediumDate
+o longDate
+o fullDate
+o shortTime
+o mediumTime
+o longTime
+o fullTime
+Ex:
+public mfd = new Date(‘2020/04/20’);
+{{ mfd | date: ‘fullDate’ }}
+{{ mfd | date: ‘MM-dd-yyyy’ }}
+Custom Format for Date [Short Date or Long Date]
+MM - 2 Digits Month
+MMM - Short Month Name
+MMMM - Long Month Name
+dd - 2 Digits date
+d - 1 digit date
+yy - 2 Digits Year
+yyyy - 4 digits year

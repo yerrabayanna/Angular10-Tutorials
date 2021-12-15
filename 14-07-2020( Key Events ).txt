@@ -1,0 +1,119 @@
+	                  Key Event Binding
+
+- A set of events used with HTML elements to handle interactions with regard to key strokes.
+- It includes 
+	a) keyup
+	b) keydown
+	c) keypress
+
+Event	Description
+=================================================
+KeyUp	- Specifies actions to perform when user release
+	  a key or any element.
+KeyDown - Specifies the actions to perform when user
+	  hold down a key.
+KeyPress - Specifies action when user finish using a key.
+
+- Key event regularly uses properties like 
+
+Property	Description
+=================================================
+keyCode	It returns the actual key code  A=65, Z=90
+	[Retuns codes of all keys]
+charCode It is similar to keyCode but can't get the code only
+	on keyup or down. A char code & keycode is 	accessible only on keypress.
+	[Returns code for only Printable chars]
+which	It is similar to keycode but suitable for various
+	other keyboard layouts.
+altKey	]
+shiftKey	]   Return true or false [on press return true]
+ctrlKey	]
+
+
+Ex:
+1. keydemo.component.ts
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-keydemo',
+  templateUrl: './keydemo.component.html',
+  styleUrls: ['./keydemo.component.css']
+})
+export class KeydemoComponent {
+  public users = [
+    {UserName: 'john'},
+    {UserName: 'john_ng'},
+    {UserName: 'john12'},
+    {UserName: 'david'}
+  ];
+  public userName;
+  public userMsg;
+  public password;
+  public isInvalid = false;
+  public isValid = false;
+  public showCapsWarning = false;
+
+  public VerifyUser() {
+    if(this.userName.length<=3) {
+      this.userMsg = 'User Name Min 4 Chars Required';
+      this.isInvalid = true;
+      this.isValid = false;
+    } else {
+      for(var user of this.users) {
+        if (user.UserName == this.userName){
+          this.userMsg = 'User Name Taken - Try another';
+          this.isInvalid = true;
+          this.isValid = false;
+          break;
+        } else {
+          this.userMsg = 'User Name Available';
+          this.isInvalid = false;
+          this.isValid = true;
+        }
+      }
+    }
+  }
+  public VerifyPassword(e){
+     if(e.keyCode>=65 && e.keyCode<=90) {
+        this.showCapsWarning = true;
+     } else {
+       this.showCapsWarning = false;
+     }
+  }
+}
+
+
+2. keydemo.component.html
+
+<div class="container-fluid">
+ <h2>Register</h2>
+ <div class="form-group">
+    <label>User Name</label>
+    <div>
+        <input (keyup)="VerifyUser()" [(ngModel)]="userName" type="text" class="form-control">
+        <span [ngClass]="{invalidStyle:isInvalid, validStyle:isValid}">{{userMsg}}</span>
+    </div>
+ </div>
+ <div class="form-group">
+    <label>Password</label>
+    <div>
+        <input (keypress)="VerifyPassword($event)" [(ngModel)]="password" type="password" class="form-control">
+        <div *ngIf="showCapsWarning">
+            <span class="fa fa-exclamation-triangle text-warning"></span>
+            <span class="text-danger">Warning CAPS not allowed</span>
+        </div>
+    </div>
+ </div>
+</div>
+
+3. keydemo.component.css
+
+.invalidStyle {
+    color:red;
+}
+.validStyle {
+    color:green;
+}
+
+

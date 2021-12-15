@@ -1,0 +1,310 @@
+Dynamically Apply class
+Syntax:
+  <div  [class.className]="true/false">
+
+Ex:  index, even, odd, first, last
+
+1. Add a new component
+	> ng g  c shoppingcart --skipTests=true
+
+2. shoppingcart.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-shoppingcart',
+  templateUrl: './shoppingcart.component.html',
+  styleUrls: ['./shoppingcart.component.css']
+})
+export class ShoppingcartComponent {
+  public categories = ['Select a Category', 'Electronics', 'Footwear', 'Fashion'];
+  public electronics = ['Select Electronics', 'JBL Speaker', 'Earpods'];
+  public footwear = ['Select Footwear', 'Nike Casuals', 'Lee Cooper Boot'];
+  public fashion = ['Select Fashion', 'Shirt', 'Jeans'];
+  public data = [
+    {Name: 'JBL Speaker', Price: 4500.55, Photo: 'assets/jblspeaker.jpg'},
+    {Name: 'Earpods', Price: 3500.55, Photo: 'assets/earpods.jpg'},
+    {Name: 'Nike Casuals', Price: 6500.55, Photo: 'assets/shoe.jpg'},
+    {Name: 'Lee Cooper Boot', Price: 2500.55, Photo: 'assets/shoe1.jpg'},
+    {Name: 'Shirt', Price: 1500.55, Photo: 'assets/shirt.jpg'},
+    {Name: 'Jeans', Price: 3500.55, Photo: 'assets/jeans.jpg'},
+  ];
+  public products = [];
+  public selectedCategoryName = 'Select a Category';
+  public selectedProductName;
+  public searchResults = [];
+  public searchedProduct = {
+    Name: '',
+    Price: 0,
+    Photo: ''
+  };
+  public cartItems = [];
+  public cartItemsCount = 0;
+  public showCart = false;
+  public GetCartCount() {
+    this.cartItemsCount = this.cartItems.length;
+  }
+  public OnCategoryChanged(){
+     switch(this.selectedCategoryName) {
+       case 'Electronics':
+         this.products = this.electronics;
+         break;
+       case 'Footwear':
+         this.products = this.footwear;
+         break;
+       case 'Fashion':
+         this.products = this.fashion;
+         break;
+         default:
+         this.products = ['Select a Category'];
+         break;
+     }
+  }
+  public onProductChanged(){
+      this.searchResults = this.data.filter(x=>x.Name==this.selectedProductName);
+      this.searchedProduct = {
+        Name: this.searchResults[0].Name,
+        Price: this.searchResults[0].Price,
+        Photo: this.searchResults[0].Photo
+      };
+  }
+  public AddToCartClick(){
+      this.cartItems.push(this.searchedProduct);
+      this.GetCartCount();
+      alert('Item Added to Cart');
+  }
+  public ToggleCart(){
+    this.showCart = (this.showCart==false)?true:false;
+  }
+  public RemoveCartItem(index){
+      let deleteConfirm = confirm('Are you sure Want to Delete?');
+      if(deleteConfirm==true) {
+        this.cartItems.splice(index, 1);
+      }
+      this.GetCartCount();
+  }
+}
+
+3. shoppingcart.component.html
+
+<div class="container-fluid">
+ <h2 class="text-primary text-center">
+    <span class="fa fa-shopping-bag"></span> I-Shop - Online Shopping
+ </h2>
+ <div class="row">
+    <div class="col-3">
+        <div class="form-group">
+            <label>Select Category</label>
+            <div>
+                <select (change)="OnCategoryChanged()" [(ngModel)]="selectedCategoryName" class="form-control">
+                    <option *ngFor="let item of categories">
+                        {{item}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Select Product</label>
+            <div>
+                <select (change)="onProductChanged()" [(ngModel)]="selectedProductName" class="form-control">
+                    <option *ngFor="let item of products">
+                        {{item}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Preview</label>
+            <div class="card">
+              <div class="card-header">
+                <h3>{{searchedProduct.Name}}</h3>
+              </div>
+              <div class="card-body text-center">
+                <img [src]="searchedProduct.Photo" width="200" height="200">
+              </div>
+              <div class="card-footer">
+                  <h3>{{searchedProduct.Price|currency:'INR'}}</h3>
+                  <button (click)="AddToCartClick()" class="btn btn-danger btn-block"><span class="fa fa-shopping-cart"></span>Add to Cart</button>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+       <div *ngIf="showCart" style="margin-top: 100px;">
+        <h4>Your Cart Items</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Preview</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr [class.even]="even" [class.odd]="odd" *ngFor="let item of cartItems; let index=index; let odd=odd; let even=even">
+                    <td>{{item.Name}}</td>
+                    <td>{{item.Price}}</td>
+                    <td>
+                        <img [src]="item.Photo" width="50" height="50">
+                    </td>
+                    <td>
+                        <button (click)="RemoveCartItem(index)" class="btn btn-outline-danger">
+                            <span class="fa fa-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       </div>
+    </div>
+    <div class="col-3">
+        <div>
+            <button (click)="ToggleCart()" class="btn btn-danger btn-block text-white"><span class="fa fa-shopping-cart"></span>[{{cartItemsCount}}]Your Cart Items</button>
+        </div>
+    </div>
+ </div>
+</div>
+
+4. shoppingcart.component.css
+
+.odd {
+    background-color: lightcyan;
+}
+.even {
+    background-color: lightgoldenrodyellow;
+}
+
+		trackBy in "ngFor"
+		===============
+- ngFor performs iteration every time when requested.
+- trackBy is a property that identifies the changes in iterator and performs iteration only when change occured.
+
+Ex:
+1. iteration.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-iterations',
+  templateUrl: './iterations.component.html',
+  styleUrls: ['./iterations.component.css']
+})
+export class IterationsComponent {
+   public products = [
+     {Id: 1, Name: 'TV', Price: 45000.55},
+     {Id: 2, Name: 'Mobile', Price: 12000.33}
+   ];
+   public AddNewProduct(){
+     this.products = [
+      {Id: 1, Name: 'TV', Price: 45000.55},
+      {Id: 2, Name: 'Mobile', Price: 12000.33},
+      {Id: 3, Name: 'Shoe', Price: 4000.55}
+     ];
+   }
+   public TrackChange(index, product){
+      return product.Id;
+   }
+}
+
+
+2. iteration.component.html
+
+<div class="container">
+ <h2>Products List</h2>
+ <button (click)="AddNewProduct()" class="btn btn-primary">Update</button>
+ <div class="form-group">
+   <table class="table table-hover">
+     <thead>
+         <tr>
+             <th>Id</th>
+             <th>Name</th>
+             <th>Price</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr *ngFor="let product of products; trackBy:TrackChange">
+            <td>{{product.Id}}</td>
+            <td>{{product.Name}}</td>
+            <td>{{product.Price}}</td>
+         </tr>
+     </tbody>
+   </table>
+ </div>
+</div>
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+<div class="card">
+                <div class=" card-header">
+                    <h5 class=" text-info" style="display: inline;">
+                        <span class="fa fa-shopping-cart text-info"></span> Cart Summary </h5><span class=" text-dark" style="font-weight: bold;">({{TotalAmount|currency:'INR'}})</span>
+                </div>
+                <div *ngFor="let item of cartItems" class="card-body">
+                    <div class="row">
+                    <div class=" col-6">
+                        {{item.Name}} :
+                    </div>
+                    <div class="col-6">
+                        {{item.Price|currency:'INR'}} 
+                    </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="  col-md-6">
+                            <strong class=" text-dark text-center">Total :</strong>
+                        </div>
+                        <div class=" col-md-6">
+                            {{TotalAmount|currency:'INR'}}
+                        </div>
+                    </div>
+                </div>
+            </div>For Summery :-
+
+In .ts file Add
+
+public AddToCart(){
+    this.cartItems.push(this.searchProducts);
+    this.GetCartCount();
+    alert('Item Added to Cart');
+    this.TotalAmount = this.TotalAmount + this.searchProducts.Price ;
+  }
+
+  public ToggleCart(){
+    this.showCart = (this.showCart == false)? true : false;
+  }
+  public RemoveCartItem(index){
+    let deleteConfirm = confirm('Are You Sure Want to Remove It ?');
+    if (deleteConfirm == true){
+      this.TotalAmount = this.TotalAmount - this.cartItems[index].Price;
+      this.cartItems.splice(index, 1);
+    }
+    this.GetCartCount();
+  }
+  public RemoveAll()
+  {
+    this.cartItems = [];
+    this.cartItems.length = 0;
+    let deleteConfirm = confirm('Are You Sure Want to Remove All Items ?');
+    if (deleteConfirm = true)
+    {
+    this.cartItems.splice(0, this.cartItems.length);
+    this.GetCartCount();
+    this.TotalAmount = 0;
+    }
+  }
+
+
+in .html file, add -
+
+In table Add -
+
+<th><button (click)="RemoveAll()" class="btn btn-outline-danger">
+                                <span class="fa fa-trash"></span> RemoveAll</button></th>
+         
+
+In Summary Add -
+
+

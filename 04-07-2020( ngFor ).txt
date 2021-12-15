@@ -1,0 +1,134 @@
+NgFor
+- It is used to repeat HTML element by using an iterator. - It is a repeater for HTML. - It uses “of” operator to read the values from a collection. And repeat HTML
+element for items in collection.
+Syntax:
+<element *ngFor="let item of collection”>
+</element>
+- ngFor uses only “of” operator for reading values from collection. It can’t use
+“in” for reading properties.
+Ex:
+1. Add a new Component by name
+>ng g c fordemo - - skipTests=true
+2. fordemo.component.ts
+   import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-fordemo',
+  templateUrl: './fordemo.component.html',
+  styleUrls: ['./fordemo.component.css']
+})
+export class FordemoComponent {
+  public categories = ['Electronics', 'Footwear', 'Fashions'];
+  public data = [
+    {Category: 'Electronics', Products: ['Samsung Tv', 'mobile']},
+    {Category: 'Footwear', Products: ['Nike casuals', 'Lee cooper Boot']}
+  ];
+  public toc = [
+    {Topic: 'Javascript', Content: 'Javascript is a JIT compiled language'},
+    {Topic: 'Typescript', Content: 'typescript is strict mode of javascript'}
+  ];
+  public products = [
+    {Name: 'shirt', Price: 3200.55, Photo: 'assets/shirt.jpeg'},
+    {Name: 'JBLspeaker', Price: 2500.66, Photo: 'assets/jblspeaker.jpg'}
+  ];
+}
+
+      
+
+3. fordemo.component.html
+<div class="container-fluid">
+ <h2 class="text-center text-primary">Simple Iterations</h2>
+ <div class="row">
+ <div class="col-3">
+ <h2>Categories</h2>
+ <ol>
+ <li *ngFor="let item of categories">
+ {{item}}
+ </li>
+ </ol>
+ </div>
+ <div class="col-3">
+ <h2>Categories</h2>
+ <select class="form-control">
+ <option *ngFor="let item of categories">
+ {{item}}
+ </option>
+ </select>
+ </div>
+ <div class="col-3">
+ <h2>Categories</h2>
+ <table class="table table-hover">
+ <tbody>
+ <tr *ngFor="let item of categories">
+ <td>{{item}}</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <h2 class="text-center text-primary">Nested Iterations</h2>
+ <div class="row">
+ <div class="col-3">
+ <h2>Menu</h2>
+ <ol>
+ <li *ngFor="let item of data">
+ {{item.Category}}
+ <ul>
+ <li *ngFor="let product of item.Products">
+ {{product}}
+ </li>
+ </ul>
+ </li>
+ </ol>
+ </div>
+ <div class="col-3">
+ <h2>Menu</h2>
+ <select class="form-control">
+ <optgroup *ngFor="let item of data" label="{{item.Category}}">
+ <option *ngFor="let product of item.Products">
+ {{product}}
+ </option>
+ </optgroup>
+ </select>
+ </div>
+ <div class="col-3">
+ <h2>Menu</h2>
+ <div>
+ <details *ngFor="let item of data">
+ <summary>{{item.Category}}</summary>
+ <ul class="list-unstyled">
+ <li *ngFor="let product of item.Products">
+ <button class="btn btn-link">{{product}}</button>
+ </li>
+ </ul>
+ </details>
+ </div>
+ </div>
+ <div class="col-3">
+ <h2>Tutorial</h2>
+ <dl>
+ <ng-container *ngFor="let item of toc">
+ <dt>{{item.Topic}}</dt>
+ <dd>{{item.Content}}</dd>
+ </ng-container>
+ </dl>
+ </div>
+ </div>
+ <h2>Products Catalog</h2>
+ <div class="row">
+
+ <div class="card-deck">
+ <div class="card" *ngFor="let item of products">
+ <div class="card-header">
+ <h4>{{item.Name}}</h4>
+ </div>
+ <div class="card-body">
+ <img [src]="item.Photo" width="100" height="100">
+ </div>
+ <div class="card-footer">
+ <h4>{{item.Price}}</h4>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>

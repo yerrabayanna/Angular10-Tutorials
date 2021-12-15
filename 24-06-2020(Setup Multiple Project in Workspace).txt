@@ -1,0 +1,75 @@
+Setup Multiple Project in Workspace:
+
+1. Create  a new Workspace
+> ng new Angular-workspace --createApplication="false"
+
+2. Open Your Workspace in VS Code
+
+Workspace Configuration Files/Folders
+=================================
+
+Component		Description
+
+node_modules	It is a special folder that comprises of
+		all library resources, which are installed
+		by using NPM [Node Package Manager]
+		for your workspace. These packages are available across all applications
+		in the workspace.
+
+projects	It comprises of your applications 
+		created for current workspace.
+
+.editorconfig	Configuration for code editors
+		It helps maintain consistent coding
+		styles for multiple developers
+		working on same project across various
+		editors and IDEs.
+
+.gitignore	Specifies intentionally untracked files
+		that Git should ignore.
+
+README.md	Introductory documentation for
+		for application	
+
+angular.json	CLI configuration defaults for all
+		project in the workspace. It includes
+		the configuration for build, serve, test
+		and deploy.
+
+package.json	Configures npm package dependencies
+		that are available to all projects in 
+		workspace.
+
+package-lock.json	Provides version information for all
+		packages installed into node_modules.
+		[yarn -  file will be yarn.lock]
+
+tsconfig.json	Default TypeScript Configuration for
+		projects in the workspace.
+
+tslint.json	Default TypeScript language 
+		configuration for project
+		[An Extensible linter for TypeScript
+		 Language]
+		[ESLint, typescript-eslint]
+		TsLint  is  an extensible static analysis
+		tool that checks the TypeScript code
+		for readability.
+		SONAR, PMD
+		
+
+2. Create a new Application in Workspace
+
+> cd Angular-workspace
+> ng generate application  appName
+   ng  generate application  Amazon
+
+Infrastructure of Project [Angular Application]
+
+
+
+
+
+
+
+

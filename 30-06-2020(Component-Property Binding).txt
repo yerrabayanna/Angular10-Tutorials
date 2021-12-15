@@ -1,0 +1,106 @@
+One Way Binding
+- Interpolation	{{ }}
+- Property Binding
+    *You can bind dynamic values directly to any property of an element in HTML.
+    *We use [ ] for property binding.
+    *Element must have relative property.
+
+Ex:
+<div class="container">
+    <h2>Product Details</h2>
+  <dl>
+      <dt>Name</dt>
+      <dd [innerHTML]="product.Name"></dd>
+      <dt>Price</dt>
+      <dd [innerHTML]="product.Price"></dd>
+      <dt>Stock</dt>
+      <dd [innerHTML]="(product.InStock==true)?'Available':'Out of Stock'"></dd>
+  </dl>
+</div>
+
+
+- Attribute Binding
+  * Angular allows to bind the values to HTML tag attributes.
+  * As every attribute is not available as property , you have use attribute binding technique.
+  * Angular can bind to attribute if you defined the attribute name with prefix "attr".
+
+Ex:
+1. Add following into TS file
+
+ public height = 100;
+  public width = 300;
+  public mergeCount = 2;
+
+2. Goto ".html"
+
+<div>
+    <table border="1" [width]="width" [attr.height]="height" >
+      <thead>
+        <th [colSpan]="mergeCount">Name</th>
+	                 (or)
+        <th [attr.colspan]="mergeCount"> Name </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>First Name</td>
+          <td>Last Name</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+		Two Way Binding
+- Angular uses frameworks like MVC and MVVM client side.
+- Model View Controller
+- Model View - View Model
+- Databinding is handled in Angular by using these frameworks.
+
+MVC 
+- It is an software architectural pattern.
+- Introduced in early 1970's by Trygve and formulated with "Small Talk".
+- Code resuability and Separation concerns.
+
+Java		- Spring
+PHP		- Cake PHP, Code Igniter
+Perl		- Catalyst, Dancer
+Python		- Django, Flask, Grok
+Ruby		- Ruby on Rails
+.NET		- ASP.NET MVC
+JavaScript	- SPINE, Angular JS  etc..
+	
+		 "MVC - Framework"
+Model
+  - It respresents the data we are working with as well as the business.
+  - Client side the data is "POJO" [Plain-Old JavaScript Objects]
+  - POJO are business objects. 
+     [ORM - Object Relational Mapper ]
+  - Model is just like a data access layer of some kind.
+  - Client side it is handling interaction with JSON type data.
+  - Model is known as "Single-Source-Of-Truth"
+
+View
+  - It represents the UI
+  - It is template that render HTML
+  - It is under the control of ViewEngines [Ivy]
+
+
+Controller
+  - It handles the overall application flow.
+  - It is the core component of MVC framework
+  - It handles the communication between Model and View
+  - It accepts input from View, and Updates to model & vice versa.
+  - It comprises of application specifc logic.
+
+
+
+
+
+
+
+
+
+
+
+
+

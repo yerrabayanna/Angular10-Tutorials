@@ -1,0 +1,202 @@
+- Add Material Library into Project
+- Enable Material Theme
+1. Add Material Library
+	> ng add @angular/material
+
+2. Styles.css
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+	           Virtual Scrolling
+	           -----------------------
+- Implicitly uses Lazy Loading
+- Lazy Loading a design pattern that allows to load the components, modules, lists only when required.
+- Eager loading loads all the components, modules, lists on application load.
+- In SPA [Single Page Applications] you have to implement virtual scrolling.
+- The new details are added to page without reloading the complete page.
+- The new details are added only when they are requested.
+- The Virtual Scrolling doesn't require navigation to next or previous.
+- Angular can implement Virtual Scrolling from the library
+	           "@angular/cdk"
+
+- The module "ScrollingModule" injects the properties requried for Virtual Scrolling.
+
+- The directive used for designing a virtual scrolling component:
+	<cdk-virtual-scroll-viewport> 
+
+- The directive used for iterating over item in virtual scroll is
+
+	 *cdkVirtualFor="let item of collection"
+	 Properties:
+	 - index
+	 - count
+	 - even
+	 - odd
+	 - first
+	 - last
+
+Note: Angular CDK is installed along with Angular Material
+
+Ex:
+1. Goto "app.module.ts" - import and register ScrollingModule
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
+imports: [
+   ScrollingModule
+  ],
+
+	 
+2. Add a new component
+	> ng g c  scrolldemo
+
+3. scrolldemo.component.ts
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-scrolldemo',
+  templateUrl: './scrolldemo.component.html',
+  styleUrls: ['./scrolldemo.component.css']
+})
+export class ScrolldemoComponent{
+  public products = [
+    {Name: 'Samsung TV', Photo: 'assets/tv.jpg'},
+    {Name: 'Earpods', Photo: 'assets/earpods.jpg'},
+    {Name: 'JBL Speaker', Photo: 'assets/jblspeaker.jpg'},
+    {Name: 'Mobile', Photo: 'assets/mobile.jpg'},
+    {Name: 'Nike', Photo: 'assets/shoe.jpg'},
+    {Name: 'Lee Boot', Photo: 'assets/shoe1.jpg'},
+    {Name: 'Shirt', Photo: 'assets/shirt.jpg'},
+    {Name: 'Tshirt', Photo: 'assets/tshirt.jpg'},
+    {Name: 'Jeans', Photo: 'assets/jeans.jpg'},
+    {Name: 'Samsung TV', Photo: 'assets/tv.jpg'},
+    {Name: 'Earpods', Photo: 'assets/earpods.jpg'},
+    {Name: 'JBL Speaker', Photo: 'assets/jblspeaker.jpg'},
+    {Name: 'Mobile', Photo: 'assets/mobile.jpg'},
+    {Name: 'Nike', Photo: 'assets/shoe.jpg'},
+    {Name: 'Lee Boot', Photo: 'assets/shoe1.jpg'},
+    {Name: 'Shirt', Photo: 'assets/shirt.jpg'},
+  ];
+}
+
+
+4. scrolldemo.component.html
+
+<div class="container-fluid">
+ <div class="row">
+  <div class="col-4">
+     <h2>Normal List</h2>
+     <ol>
+         <li *ngFor="let item of products">
+            {{item.Name}}
+         </li>
+     </ol>
+  </div>
+  <div class="col-8">
+    <h2>Virtual Scrolling List</h2>
+    <cdk-virtual-scroll-viewport itemSize="100" class="example-viewport">
+        <div class="card" *cdkVirtualFor="let product of products">
+            <div class="card-body">
+                <img [src]="product.Photo" width="50" height="50">
+            </div>
+            <div class="card-footer">
+                <h3>{{product.Name}}</h3>
+            </div>
+        </div>
+    </cdk-virtual-scroll-viewport>
+  </div>
+ </div>
+</div>
+
+5. scrolldemo.component.css
+
+.example-viewport {
+    height: 300px;
+    width: 55%;
+    border:1px solid darkcyan;
+    display: flex;
+    margin-bottom: 30px;
+}
+	
+             Dropdown with Icons and Images for Options
+             ======================================
+	              [Material AutoComplete]
+
+- MatFormFieldModule   : It is used in a component to define
+		        any material form element, like
+		        textbox, password, button, radio
+		        etc.
+		        <mat-form-field>
+
+- MatInputModule	      : It configure <input> element of 
+		        type text, password, email, url
+		        date etc..
+		        <input type="text" matInput>
+
+- MatAutoCompleteModule : It configure a <datalist> with 
+		             <option>. It is attached to 
+		              any input so that you show
+		              the tips while keying in chars.
+		             <mat-autocomplete>
+		             <mat-option>
+
+
+Ex:
+1. Import Modules
+
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+2. Create component
+	>ng g c autocomplete
+
+3. component.ts
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-autocomplete',
+  templateUrl: './autocomplete.component.html',
+  styleUrls: ['./autocomplete.component.css']
+})
+export class AutocompleteComponent{
+  public countries = [
+    {Name: 'India', Flag: 'assets/india.png', CallCode: '+91'},
+    {Name: 'United Kingdom', Flag: 'assets/uk.png', CallCode: '+44'}
+  ];
+
+}
+
+
+4. .component.html
+
+<div class="container-fluid">
+  <h2>Auto Complete Demo</h2>
+  <form>
+      <mat-form-field style="width: 100%;">
+          <input type="text" matInput placeholder="Select Your Country" [matAutocomplete]="countriesList">
+          <mat-autocomplete #countriesList="matAutocomplete">
+            <mat-option *ngFor="let item of countries" [value]="item.Name">
+                <span><img [src]="item.Flag" ></span> 
+                <span>{{item.Name}}</span> 
+                <span>{{item.CallCode}}</span>
+            </mat-option>
+          </mat-autocomplete>
+      </mat-form-field>
+  </form>
+  <h2>HTML Auto Complete</h2>
+  <input type="text" list="terms">
+  <datalist id="terms">
+    <option>Delhi</option>
+    <option>Hyd</option>
+    <option>Chennai</option>
+    <option>Mumbai</option>
+  </datalist>
+</div>
+
+
+
+
+

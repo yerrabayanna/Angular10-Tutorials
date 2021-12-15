@@ -1,0 +1,99 @@
+12. I18PluralPipe
+- As per coding standards we have to define a plural name for any collection and
+singular for single object.
+Ex: product – one value, products – multiple value
+- Plural pipe can identify whether the object comprises of single or multiple values and
+define a name plural name dynamically. 
+- It can get the collection count and display messages according to the count. 
+- It uses a messages map to verify the values.
+Syntax:
+{{ collection.length | i18pluralpipe: keyValueCollection }}
+Ex:
+
+import----
+->go to app.module.ts
+
+import { MatBadgeModule } from '@angular/material/badge' ;
+imports:[
+MatBadgeModule ]
+
+1. Pipedemo.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-pipedemo',
+ templateUrl: './pipedemo.component.html',
+ styleUrls: ['./pipedemo.component.css']
+})
+export class PipedemoComponent {
+ public notifications = ['FaceBook Updated', 'Memory Optimized', 'Game Installed'];
+ public notificationsMap: {[key:string]:string} = {
+ "=0": 'No Notifications', "=1": 'One Notification', 'other': '# Notifications'
+ }
+ public display = [];
+ public ShowNotifications() {
+ this.display = this.notifications;
+ }
+}
+2. Pipedemo.component.html
+<div class="container">
+ <h2>Pipe Demo</h2>
+ <div class="form-group">
+ <div class="btn-toolbar bg-danger justify-content-between">
+ <div class="btn-group">
+ <button class="btn btn-danger">Install Game</button>
+ <button class="btn btn-danger">Clean Memory</button>
+ <button class="btn btn-danger">Update App</button>
+ </div>
+ <div class="btn-group">
+ <button class="btn btn-danger"><span class="fa fa-trash"></span>Clear
+Notifications</button>
+ </div>
+ </div>
+ </div>
+ <div class="form-group">
+ <button class="btn btn-danger" (click)="ShowNotifications()">
+ <span class="badge badge-light">
+ {{notifications.length | i18nPlural:notificationsMap}}
+ </span>
+ </button>
+ <div>
+ <ol>
+ <li *ngFor="let item of display">
+ {{item}}
+ </li>
+ </ol>
+ </div>
+ </div>
+ <div class="form-group">
+ <button class="btn" (click)="ShowNotifications()">
+ <mat-icon matBadge=" {{notifications.length | i18nPlural:notificationsMap}}"
+matBadgeColor="warn">home</mat-icon>
+ </button>
+ </div>
+</div>
+Custom Pipe
+- Pipe is a typescript class
+- It implements “PipeTransform”
+- It uses “transform()” method to define a functionality for pipe. 
+- It transform() method must return a transformation.
+1. Add a new File into "app" folder
+"sentencecase.pipe.ts"
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({
+ name: 'sentencecase'
+})
+export class SentenceCasePipe implements PipeTransform {
+ transform(str) {
+ let firstChar = str.charAt(0);
+ let restChars = str.substring(1);
+ let sentence = firstChar.toUpperCase() + restChars.toLowerCase();
+ return sentence;
+ }
+}
+2. Register Pipe "app.module.ts"
+ declarations: [
+ SetenceCasePipe
+ ]
+3. Apply to text
+public title = "WELcomE to TypEscriPT"
+{{title | sentencecase }}

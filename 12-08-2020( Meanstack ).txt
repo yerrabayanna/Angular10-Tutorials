@@ -1,0 +1,158 @@
+MEAN Stack - for End to End Application
+Database: 
+- MongoDb
+	o Document Oriented
+	o JavaScript Based
+	o Open Source
+	o Cross Platform
+	o Non-Sql
+	o Non-RDBMS
+RDBMS 					MongoDb
+===================================================
+Database 			Database
+Table 				Collection
+Row 				Document
+Column/Field 			Field
+Join 				Embedded Document
+
+- Setup Environment for MongoDb
+o Download MongoDb Database Server
+   https://www.mongodb.com/try/download/community
+o Start MongoDb Database Server
+ - Go to “Services.msc” in window run option
+ - Right Click on “MongoDb” server and Start
+o Open MongoDb Client
+ - Open Command Prompt
+ - Change to the following and execute the
+ command “mongo.exe”
+C:\Program Files\MongoDB\Server\4.4\bin>mongo.exe
+- MongoDb Commands [Case Sensitive]
+
+Command 			Description
+===========================================================================
+show dbs 			To View the list of all databases.
+db 				To View the active database.
+use 				To Switch to existing database or to create a new database.
+				  use
+					new_DatabaseName
+
+db.createCollection(“coll 	Create a new Db Table
+ectionName”) 			 Ex:
+				db.createCollection("tblcategories")
+				db.createCollection("tblproducts")
+
+show collections 		To View the list of Dbtables
+db.collectionName.inser
+t({ })
+db.collectionName.inser
+t([{}, {}])
+				To insert one or manyrecords into table(collection).
+				 Ex:
+				db.tblcategories.insert([{CategoryId:1,CategoryName:'Electronics'},{CategoryId:2,CategoryName:'Footwear'}])
+				Ex:
+				db.tblproducts.insert([{ProductId: 1, Name: 'SamsungTV', Price: 45000.55,CategoryId:1},{ProductId:2, Name:'Nike Casuals', Price:4000.55, CategoryId: 2},{ProductId: 3, Name: 'JBLSpeaker', Price: 5000.55, CategoryId: 1}, {ProductId:4, Name: 'Lee CooperBoot', Price: 3000.55,CategoryId: 2}, ])
+
+
+db.collectionName.find()
+.pretty()
+				To View the records intable.
+				Ex:
+db.tblcategories.find().pret
+ty()
+
+									Server-Side Node JS
+									===================
+
+- Node JS is an open source, cross platformJavaScript Based Server-Side Scripting. 
+- No Buffering
+- Asynchronous
+- Single Threaded
+- Node JS uses “JavaScript Programs” server-side
+[“.js”]
+
+Node JS requires MongoDb Library to handlecommunication with database. 
+======================================================================
+- Create a new folder in your projects “ServerSide”
+- Install “Mongodb” library for your workspace.
+ C:\Angular-workspace>npm install mongodb
+- Create a new JavaScript file “testconnection.js” in “ServerSide” folder
+
+Testconnection.js
+
+//import MongoDb Library
+var mongoClient = require("mongodb").MongoClient;
+//Mongo Connection
+var url = "mongodb://127.0.0.1:27017";
+mongoClient.connect(url, function(err, clientObj){
+ if(!err) {
+ console.log(`Connected to MongoDB`);
+ } else {
+ console.log(err);
+ }
+})
+
+- Compile and Run Node JS Program by using Node
+Compile
+Command Prompt or Terminal:
+node testconnection.js
+Ex: To Read Records from a Database Table
+//import MongoDb Library
+var mongoClient = require("mongodb").MongoClient;
+//Mongo Connection
+var url = "mongodb://127.0.0.1:27017";
+mongoClient.connect(url, function(err, clientObj){
+ if(!err) {
+ var database = clientObj.db("apidb");
+ database.collection("tblproducts").find().toArray(function(err, documents){
+ if(!err){
+ console.log(documents);
+ } else {
+ console.log(err);
+ }
+ })
+ } else {
+ console.log(err);
+ }
+})
+Ex: Inserting record into Mogobd Collection
+//import MongoDb Library
+var mongoClient = require("mongodb").MongoClient;
+//Mongo Connection
+var url = "mongodb://127.0.0.1:27017";
+mongoClient.connect(url, function(err, clientObj){
+ if(!err) {
+ var database = clientObj.db("apidb");
+ var data = {
+ ProductId: 5,
+ Name: 'Earpods',
+ Price: 5600.66,
+ Category: 1
+ };
+ database.collection("tblproducts").insert(data, function(err, result){
+ if(!err) {
+ console.log("Record Inserted");
+ } else {
+ console.log(err);
+ }
+ })
+ } else {
+ console.log(err);
+ }
+})
+
+									Middleware
+									===========
+
+- Install “Express” middleware in your workspace
+  > npm install express
+- Middleware allows communication between client and serverside application
+- You can create an API that handle communication.
+Ex:
+API.JS
+var express = require("express");
+var app = express();
+app.get("/", function(req, res){
+ res.send("Welcome to API");
+})
+app.listen(8080);
+console.log("Server Started : http://127.0.0.1:8080");

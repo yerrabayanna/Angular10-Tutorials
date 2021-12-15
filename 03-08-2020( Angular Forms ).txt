@@ -1,0 +1,139 @@
+Angular Forms
+- Form is a container that comprises of set of elements, which allow interaction with our
+application. 
+- From provides an UI from where user can input, view, edit and delete data. 
+- HTML form comprises of elements like button, textbox, checkbox, radio, dropdownlist etc. 
+- Angular makes the static HTML form into dynamic. 
+- HTML presents form and Angular makes it interactive to handle client-side interactions. 
+- Based on where Angular is handling interactions the forms in angular are classified to 2 types
+o Template Driven Form
+o Model Driven Form / Reactive Form
+Template Driven Form
+- A template driven form configures and handles all interactions at View Level. 
+- Configuration of a form and its manipulation both handled in HTML template. 
+- Very optimized controller level interaction. All interactions are at view level. 
+- It reduces the number of requests to component. 
+- It improves page load time. 
+- It is good for inline technique. 
+- Template driven form is heavy on page. Slow in handling interactions and rendering. 
+- Hard to test and extend the form. 
+- You can use template driven forms when you are designing an interface that doesn’t require
+regular extensions. 
+- The directives that are used to configure form and form elements in template driven
+approach
+o NgForm
+o NgModel - NgForm: It provides a set of properties and methods that are used to configure and handle
+<form> element. 
+- NgModel: It provides set of properties and methods that are used to configure and handle a
+form control like button, textbox, checkbox, radio, dropdown list, listbox etc.. 
+- The library for NgForm and NgModel is “@angular/forms”
+- The module is “FormsModule”
+Configuring Form:
+<form #formName=”ngForm”>
+</form>
+ngForm Attributes:
+value, pristine, dirty, valid, invalid, errors etc..
+formName.value, formName.pristine, formName.valid
+Configure Form Elements:
+<input type=”text” ngModel #txtName=”ngModel” name=”txtName”>
+ngModel Attributes:
+value, pristine, dirty, valid, invalid etc..
+txtName.value, txtName.pristine etc..
+Accessing Form Data in Template Driven Approach
+- You can use “value” property of “ngForm”
+- It is an object that returns collection of key and value pair. 
+- The control names are referred as keys and their values as value.
+Syntax:
+frmRegister.value = { txtName:value, txtPrice:value }
+Ex:
+1. Templateform.component.ts
+import { Component, OnInit } from '@angular/core';
+@Component({
+ selector: 'app-templateform',
+ templateUrl: './templateform.component.html',
+ styleUrls: ['./templateform.component.css']
+})
+export class TemplateformComponent {
+ public formdata;
+ public FormSubmit(obj) {
+ this.formdata = obj;
+ }
+}
+2. Templateform.component.html
+<div class="container-fluid">
+ <div class="row">
+ <div class="col-3">
+ <h2>Register Product</h2>
+ <form #frmRegister="ngForm" (submit)="FormSubmit(frmRegister.value)" >
+ <div class="form-group">
+ <label>Name</label>
+ <div>
+ <input type="text" name="txtName" ngModel #txtName="ngModel" class="form-control">
+ </div>
+ </div>
+ <div class="form-group">
+ <label>Price</label>
+ <div>
+ <input type="text" name="txtPrice" ngModel #txtPrice="ngModel" class="form-control">
+ </div>
+ </div>
+ <div class="form-group">
+ <label>Quantity</label>
+ <div>
+ <input type="number" name="txtQty" ngModel #txtQty="ngModel" class="form-control">
+ </div>
+ </div>
+ <div class="form-group">
+ <label>Shipped To</label>
+ <div>
+ <select class="form-control" name="lstCities" ngModel #lstCities="ngModel">
+ <option>Delhi</option>
+ <option>Hyd</option>
+ </select>
+ </div>
+ </div>
+ <div class="form-group">
+ <button class="btn btn-primary btn-block">Register</button>
+ </div>
+ </form>
+ </div>
+ <div class="col-3">
+ <h2>Form Reference</h2>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{frmRegister.value.txtName}}</dd>
+ <dt>Price</dt>
+ <dd>{{frmRegister.value.txtPrice}}</dd>
+ <dt>Quantity</dt>
+ <dd>{{frmRegister.value.txtQty}}</dd>
+ <dt>Total</dt>
+ <dd>{{frmRegister.value.txtQty * frmRegister.value.txtPrice}}</dd>
+ <dt>Shipped To</dt>
+ <dd>
+ {{frmRegister.value.lstCities}}
+ </dd>
+ </dl>
+ </div>
+ <div class="col-3">
+ <h2>Control Reference</h2>
+ <dl>
+ <dt>Name</dt>
+ <dd>{{txtName.value}}</dd>
+ <dt>Price</dt>
+ <dd>{{txtPrice.value}}</dd>
+ <dt>Quantity</dt>
+ <dd>{{txtQty.value}}</dd>
+ <dt>Total</dt>
+ <dd>{{txtQty.value*txtPrice.value}}</dd>
+ <dt>Shipped To</dt>
+ <dd>{{lstCities.value}}</dd>
+ </dl>
+ </div>
+ <div class="col-3">
+ <h2>Submitted Data</h2>
+ <pre>
+ {{formdata | json}}
+ </pre>
+ </div>
+ </div>
+</div>

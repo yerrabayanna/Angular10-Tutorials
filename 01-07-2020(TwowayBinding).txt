@@ -1,0 +1,210 @@
+Setting up Bootstrap CSS for Angular Project:
+1. Install Bootstrap in your workspace
+
+      C:\work-space> npm install bootstrap
+
+2.  Goto the following location
+	   projects
+	   |_amazon
+	      |_src
+	         |_styles.css
+
+3.  Import bootstrap css
+
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
+
+	../   → exit current folder and goto pervious level
+	./    → Access from current folder
+
+
+
+
+
+Two Way Data Binding
+- In Two way binding Model is "Single-Source-Of-Truth".
+- Model contains data tracked "onChange" and contains information about previous value and current value.
+- It uses component "ngOnChange" event to identify the changes and update the changes.
+- Two way binding in Angular is managed by using "NgModel" directive.
+- NgModel uses property and event binding technique
+	             	[ ]	→ Property Binding
+	 	( )	→ Event Binding
+	
+	[(ngModel)]="ReferenceName"
+
+- NgModel is a member of "FormsModule"  in "@angular/forms" library.
+
+
+Ex:
+1. Go to "app.module.ts"
+
+import { FormsModule } from '@angular/forms';
+
+ imports: [
+    BrowserModule,
+    FormsModule
+  ],
+
+2. Add a new component
+	app> ng g c  twowaybinding --skipTests=true
+
+3. twowaybinding.component.ts
+
+export class TwowaybindingComponent {
+  public Name = 'Samsung TV';
+  public Price = 34000.44;
+  public ShippedTo = 'Hyderabad';
+  public InStock = true;
+}
+
+4. twowaybinding.component.html
+
+<div class="container-fluid">
+  <h2 class="text-center text-primary">Register Product</h2>
+  <div class="row">
+    <div class="col-3">
+       <div class="form-group">
+        <label>Name</label>
+        <div>
+            <input type="text" class="form-control" [(ngModel)]="Name">
+        </div>
+       </div>
+       <div class="form-group">
+         <label>Price</label>
+         <div>
+             <input type="text" class="form-control" [(ngModel)]="Price" >
+         </div>
+       </div>
+       <div class="form-group">
+         <label>Shipped To</label>
+         <div>
+             <select class="form-control" [(ngModel)]="ShippedTo">
+              <option>Delhi</option>
+              <option>Hyderabad</option>
+             </select>
+         </div>
+       </div>
+       <div class="form-group">
+         <label>In Stock</label>
+         <div>
+             <input type="checkbox" [(ngModel)]="InStock"> Yes
+         </div>
+       </div>
+    </div>
+    <div class="col-9">
+        <table class="table table-hover">
+            <colgroup span="1" style="background-color: lightcyan; font-weight: bold;"></colgroup>
+           <tr>
+               <td>Name</td>
+               <td>{{Name}}</td>
+           </tr>
+           <tr>
+               <td>Price</td>
+               <td>{{Price}}</td>
+           </tr>
+           <tr>
+               <td>Shippied To</td>
+               <td>{{ShippedTo}}</td>
+           </tr>
+           <tr>
+               <td>Stock</td>
+               <td>{{(InStock==true)?"Available":"Out of Stock"}}</td>
+           </tr>
+        </table>
+    </div>
+  </div>
+</div>
+
+5. twowaybinding.component.css
+
+.col-3 {
+    border-right: 2px dotted darkcyan;
+}
+
+
+Ex: Controller Logic for Updating Model Data
+
+1. ".ts" file
+
+export class TwowaybindingComponent {
+  public Name = '';
+  public Price = 0.0;
+  public ShippedTo = '';
+  public InStock = false;
+  public product = {
+    Name: '',
+    Price: 0,
+    ShippedTo: '',
+    InStock: false
+  };
+  public RegisterClick(){
+     this.product = {
+       Name: this.Name,
+       Price: this.Price,
+       ShippedTo: this.ShippedTo,
+       InStock: this.InStock
+     };
+  }
+}
+
+2. ".html"
+<div class="container-fluid">
+  <h2 class="text-center text-primary">Register Product</h2>
+  <div class="row">
+    <div class="col-3">
+       <div class="form-group">
+        <label>Name</label>
+        <div>
+            <input type="text" class="form-control" [(ngModel)]="Name">
+        </div>
+       </div>
+       <div class="form-group">
+         <label>Price</label>
+         <div>
+             <input type="text" class="form-control" [(ngModel)]="Price" >
+         </div>
+       </div>
+       <div class="form-group">
+         <label>Shipped To</label>
+         <div>
+             <select class="form-control" [(ngModel)]="ShippedTo">
+              <option>Delhi</option>
+              <option>Hyderabad</option>
+             </select>
+         </div>
+       </div>
+       <div class="form-group">
+         <label>In Stock</label>
+         <div>
+             <input type="checkbox" [(ngModel)]="InStock"> Yes
+         </div>
+       </div>
+       <div class="form-group">
+        <button (click)="RegisterClick()" class="btn btn-primary btn-block">Register</button>
+       </div>
+    </div>
+    <div class="col-9">
+        <table class="table table-hover">
+            <colgroup span="1" style="background-color: lightcyan; font-weight: bold;"></colgroup>
+           <tr>
+               <td>Name</td>
+               <td>{{product.Name}}</td>
+           </tr>
+           <tr>
+               <td>Price</td>
+               <td>{{product.Price}}</td>
+           </tr>
+           <tr>
+               <td>Shippied To</td>
+               <td>{{product.ShippedTo}}</td>
+           </tr>
+           <tr>
+               <td>Stock</td>
+               <td>{{(product.InStock==true)?"Available":"Out of Stock"}}</td>
+           </tr>
+        </table>
+    </div>
+  </div>
+</div>
+
+=======================================================================
+
